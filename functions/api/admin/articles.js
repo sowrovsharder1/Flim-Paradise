@@ -1,0 +1,2 @@
+import {getDB} from '../../_lib/db.js'; import {json,unauthorized,serverError} from '../../_lib/response.js'; import {requireAuth} from '../../_lib/auth.js';
+export async function onRequestGet({request,env}){if(!await requireAuth(request,env))return unauthorized();try{const {results}=await getDB(env).prepare('SELECT id,title,slug,content_type,status,updated_at FROM articles ORDER BY updated_at DESC LIMIT 200').all();return json({articles:results})}catch(e){return serverError(e.message)}}

@@ -1,0 +1,2 @@
+import {json,notFound,serverError} from '../../_lib/response.js';
+export async function onRequestGet({params,env}){try{if(!env.POSTERS)return new Response('R2 binding missing',{status:500});const key=params.key||'';if(!key||key.includes('..'))return notFound();const obj=await env.POSTERS.get(key);if(!obj)return notFound();const h=new Headers();obj.writeHttpMetadata(h);h.set('etag',obj.httpEtag);h.set('cache-control','public, max-age=31536000, immutable');return new Response(obj.body,{headers:h});}catch(e){return serverError(e.message)}}

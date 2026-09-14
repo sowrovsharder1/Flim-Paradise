@@ -1,0 +1,2 @@
+import {getDB} from '../../_lib/db.js'; import {json,notFound,serverError} from '../../_lib/response.js';
+export async function onRequestPost({request,env}){try{const b=await request.json();const id=Number(b.movie_id);if(!id)return notFound();const r=await getDB(env).prepare("UPDATE movies SET views=views+1 WHERE id=? AND status='published'").bind(id).run();if(!r.meta.changes)return notFound();return json({ok:true})}catch(e){return serverError(e.message)}}
