@@ -1,184 +1,369 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Top 10 Manager | FilmParadise BD</title>
+  <title>Top 10 Movies | FilmParadise BD</title>
+  <meta name="description" content="Discover the best Top 10 movie lists curated by FilmParadise BD.">
 
-  <meta
-    name="description"
-    content="Manage FilmParadise BD Top 10 movie lists."
-  />
-
-  <link
-    rel="stylesheet"
-    href="/assets/css/style.css"
-  />
+  <link rel="stylesheet" href="/assets/css/style.css">
 
   <style>
-    .top10-admin-page {
-      max-width: 1200px;
+    :root {
+      --fp-red: #e50914;
+      --fp-red-dark: #b20710;
+      --fp-yellow: #f5c518;
+      --fp-bg: #080808;
+      --fp-card: #111111;
+      --fp-card-2: #151515;
+      --fp-border: #252525;
+      --fp-text: #ffffff;
+      --fp-muted: #a7a7a7;
+    }
+
+    body {
+      background: var(--fp-bg);
+      color: var(--fp-text);
+    }
+
+    .top10-page {
+      max-width: 1250px;
       margin: 0 auto;
-      padding: 40px 20px 70px;
+      padding: 35px 20px 70px;
     }
 
-    .top10-admin-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+    .top10-heading {
       margin-bottom: 30px;
-      flex-wrap: wrap;
     }
 
-    .top10-admin-heading h1 {
+    .top10-heading h1 {
       margin: 0 0 8px;
-      font-size: 32px;
+      font-size: 34px;
+      font-weight: 800;
     }
 
-    .top10-admin-heading p {
+    .top10-heading p {
       margin: 0;
-      opacity: 0.7;
+      color: var(--fp-muted);
+      font-size: 15px;
     }
 
-    .top10-add-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 11px 18px;
-      border-radius: 8px;
+    /* =========================
+       ARCHIVE CARDS
+       ========================= */
+
+    .top10-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .top10-card {
+      display: block;
+      background: var(--fp-card);
+      border: 1px solid var(--fp-border);
+      border-radius: 12px;
+      overflow: hidden;
       text-decoration: none;
-      font-weight: 700;
-      background: #e50914;
-      color: #fff;
-      border: 1px solid #e50914;
+      color: inherit;
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
     }
 
-    .top10-add-btn:hover {
-      opacity: 0.9;
+    .top10-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--fp-red);
+      box-shadow: 0 12px 35px rgba(0,0,0,.35);
     }
 
-    .top10-manager-box {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
+    .top10-card-poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      background: #171717;
       overflow: hidden;
     }
 
-    .top10-manager-table-wrap {
+    .top10-card-poster img {
       width: 100%;
-      overflow-x: auto;
+      height: 100%;
+      display: block;
+      object-fit: cover;
     }
 
-    .top10-manager-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 750px;
-    }
-
-    .top10-manager-table th,
-    .top10-manager-table td {
-      padding: 16px 18px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .top10-manager-table th {
-      font-size: 13px;
+    .top10-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--fp-red);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 9px;
+      border-radius: 5px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      opacity: 0.7;
-      background: rgba(255, 255, 255, 0.03);
+      letter-spacing: .3px;
     }
 
-    .top10-manager-table td {
+    .top10-card-content {
+      padding: 15px;
+    }
+
+    .top10-card-title {
+      margin: 0 0 8px;
+      color: var(--fp-yellow);
+      font-size: 19px;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .top10-card-description {
+      margin: 0;
+      color: #c7c7c7;
+      font-size: 14px;
+      line-height: 1.55;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .top10-card-footer {
+      margin-top: 13px;
+      padding-top: 11px;
+      border-top: 1px solid var(--fp-border);
+      color: #8f8f8f;
+      font-size: 12px;
+    }
+
+    /* =========================
+       DETAIL VIEW
+       ========================= */
+
+    .top10-detail {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .top10-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 24px;
+      color: #cfcfcf;
+      text-decoration: none;
       font-size: 14px;
     }
 
-    .top10-title-cell {
-      font-weight: 700;
-      color: #ffd84d;
-      max-width: 380px;
+    .top10-back:hover {
+      color: #fff;
     }
 
-    .top10-description-cell {
-      max-width: 300px;
-      opacity: 0.75;
+    .top10-detail-header {
+      margin-bottom: 30px;
     }
 
-    .top10-status {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 9px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: capitalize;
-      background: rgba(255, 255, 255, 0.08);
+    .top10-detail-header h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      line-height: 1.2;
+      font-weight: 800;
     }
 
-    .top10-actions {
+    .top10-detail-header p {
+      margin: 0;
+      max-width: 800px;
+      color: #aaa;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .top10-list {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    .top10-action-btn {
-      display: inline-flex;
+    .top10-item {
+      display: grid;
+      grid-template-columns: 70px 150px minmax(0, 1fr);
+      gap: 20px;
       align-items: center;
-      justify-content: center;
-      padding: 7px 11px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.05);
-      color: inherit;
-      cursor: pointer;
+      background: var(--fp-card);
+      border: 1px solid var(--fp-border);
+      border-radius: 12px;
+      padding: 14px;
     }
 
-    .top10-action-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .top10-empty {
-      padding: 60px 20px;
+    .top10-rank {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--fp-red);
       text-align: center;
-      opacity: 0.7;
+      line-height: 1;
+    }
+
+    .top10-item-poster {
+      width: 150px;
+      height: 215px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #171717;
+    }
+
+    .top10-item-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .top10-item-info h2 {
+      margin: 0 0 8px;
+      color: var(--fp-yellow);
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    .top10-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .top10-meta span {
+      background: #202020;
+      color: #cfcfcf;
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 12px;
+    }
+
+    .top10-item-info p {
+      margin: 0;
+      color: #c2c2c2;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    /* =========================
+       STATES
+       ========================= */
+
+    .top10-message {
+      padding: 35px 20px;
+      border: 1px solid var(--fp-border);
+      border-radius: 12px;
+      background: var(--fp-card);
+      text-align: center;
+      color: #aaa;
+    }
+
+    .top10-message h2 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: 22px;
+    }
+
+    .top10-message p {
+      margin: 0;
+      color: #999;
     }
 
     .top10-loading {
-      padding: 60px 20px;
       text-align: center;
-      opacity: 0.7;
+      padding: 50px 20px;
+      color: #999;
     }
 
-    .top10-error {
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      background: rgba(229, 9, 20, 0.12);
-      border: 1px solid rgba(229, 9, 20, 0.3);
-      color: #ffb3b3;
-      display: none;
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (max-width: 1050px) {
+      .top10-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
 
-    @media (max-width: 700px) {
-      .top10-admin-page {
-        padding: 28px 14px 50px;
+    @media (max-width: 760px) {
+      .top10-page {
+        padding: 25px 15px 50px;
       }
 
-      .top10-admin-heading h1 {
-        font-size: 27px;
+      .top10-heading h1 {
+        font-size: 28px;
       }
 
-      .top10-add-btn {
-        width: 100%;
+      .top10-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+      }
+
+      .top10-card-title {
+        font-size: 17px;
+      }
+
+      .top10-card-content {
+        padding: 12px;
+      }
+
+      .top10-item {
+        grid-template-columns: 48px 105px minmax(0, 1fr);
+        gap: 12px;
+        padding: 10px;
+      }
+
+      .top10-rank {
+        font-size: 28px;
+      }
+
+      .top10-item-poster {
+        width: 105px;
+        height: 150px;
+      }
+
+      .top10-item-info h2 {
+        font-size: 18px;
+      }
+
+      .top10-detail-header h1 {
+        font-size: 29px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .top10-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .top10-item {
+        grid-template-columns: 42px 90px minmax(0, 1fr);
+      }
+
+      .top10-item-poster {
+        width: 90px;
+        height: 128px;
+      }
+
+      .top10-item-info h2 {
+        font-size: 16px;
+      }
+
+      .top10-item-info p {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .top10-meta span {
+        font-size: 10px;
+        padding: 4px 6px;
       }
     }
   </style>
@@ -186,437 +371,531 @@
 
 <body>
 
-  <header class="site-header">
-    <div class="container">
-      <div class="site-header-inner">
+  <!--
+    Existing FilmParadise header/navbar from the site
+    will be inserted by the site's normal layout if applicable.
+  -->
 
-        <a
-          href="/admin/"
-          class="brand"
-        >
-          FilmParadise BD
+  <main class="top10-page">
+
+    <section id="archiveView">
+
+      <div class="top10-heading">
+        <h1>Top 10</h1>
+        <p>Discover our handpicked Top 10 movie lists.</p>
+      </div>
+
+      <div id="top10Grid" class="top10-grid">
+        <div class="top10-loading">
+          Loading Top 10 lists...
+        </div>
+      </div>
+
+    </section>
+
+
+    <section id="detailView" style="display:none;">
+
+      <div class="top10-detail">
+
+        <a href="/top-10.html" class="top10-back">
+          ← Back to Top 10
         </a>
 
-        <nav class="site-nav">
-          <a href="/admin/">Dashboard</a>
-          <a href="/admin/add">Add Title</a>
-          <a
-            href="/admin/top-10.html"
-            class="active"
-          >
-            Top 10
-          </a>
-          <a href="/">View Site</a>
-        </nav>
+        <div id="detailHeader" class="top10-detail-header">
+        </div>
 
-      </div>
-    </div>
-  </header>
-
-  <main class="top10-admin-page">
-
-    <div class="top10-admin-header">
-
-      <div class="top10-admin-heading">
-        <h1>Top 10 Manager</h1>
-
-        <p>
-          Create and manage separate Top 10 movie lists.
-        </p>
-      </div>
-
-      <a
-        href="/admin/top-10-edit.html"
-        class="top10-add-btn"
-      >
-        + Add New Top 10
-      </a>
-
-    </div>
-
-    <div
-      id="top10-error"
-      class="top10-error"
-    ></div>
-
-    <div
-      id="top10-loading"
-      class="top10-loading"
-    >
-      Loading Top 10 posts...
-    </div>
-
-    <div
-      id="top10-empty"
-      class="top10-empty top10-manager-box"
-      style="display: none;"
-    >
-      <h3>No Top 10 posts yet</h3>
-
-      <p>
-        Create your first Top 10 movie list to get started.
-      </p>
-
-      <a
-        href="/admin/top-10-edit.html"
-        class="top10-add-btn"
-      >
-        + Create Top 10 Post
-      </a>
-    </div>
-
-    <div
-      id="top10-manager-box"
-      class="top10-manager-box"
-      style="display: none;"
-    >
-
-      <div class="top10-manager-table-wrap">
-
-        <table class="top10-manager-table">
-
-          <thead>
-            <tr>
-              <th>Top 10 List</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Updated</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody
-            id="top10-posts-list"
-          ></tbody>
-
-        </table>
+        <div id="top10List" class="top10-list">
+        </div>
 
       </div>
 
-    </div>
+    </section>
 
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>
-        © FilmParadise BD. All rights reserved.
-      </p>
-    </div>
-  </footer>
-
-  <script src="/assets/js/api.js"></script>
-
-  <script src="/assets/js/admin/common.js"></script>
 
   <script>
-    document.addEventListener(
-      "DOMContentLoaded",
-      async () => {
+    /*
+      FilmParadise BD
+      Public Top 10 system
 
-        /*
-         * Check admin login.
-         */
+      IMPORTANT:
+      This page NEVER uses admin authentication.
 
-        if (
-          window.admin &&
-          typeof admin.requireLogin === "function"
-        ) {
-          await admin.requireLogin();
+      Archive:
+        GET /api/top10/posts
+
+      Individual post:
+        GET /api/top10/posts?slug=xxxxx
+    */
+
+    const archiveView = document.getElementById("archiveView");
+    const detailView = document.getElementById("detailView");
+    const top10Grid = document.getElementById("top10Grid");
+    const detailHeader = document.getElementById("detailHeader");
+    const top10List = document.getElementById("top10List");
+
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function posterUrl(item) {
+      /*
+        The API already returns poster_url.
+
+        We first use poster_url.
+        If it is missing but poster_key exists,
+        we build the public image endpoint.
+      */
+
+      if (item.poster_url) {
+        return item.poster_url;
+      }
+
+      if (item.poster_key) {
+        return "/api/top10/image?key=" +
+          encodeURIComponent(item.poster_key);
+      }
+
+      return "";
+    }
+
+
+    function showMessage(container, title, message) {
+      container.innerHTML = `
+        <div class="top10-message">
+          <h2>${escapeHTML(title)}</h2>
+          <p>${escapeHTML(message)}</p>
+        </div>
+      `;
+    }
+
+
+    async function loadArchive() {
+
+      archiveView.style.display = "";
+      detailView.style.display = "none";
+
+      top10Grid.innerHTML = `
+        <div class="top10-loading">
+          Loading Top 10 lists...
+        </div>
+      `;
+
+      try {
+
+        const response = await fetch("/api/top10/posts", {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          },
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to load Top 10 lists.");
         }
 
-        /*
-         * Elements.
-         */
+        const data = await response.json();
 
-        const loading =
-          document.getElementById(
-            "top10-loading"
-          );
-
-        const empty =
-          document.getElementById(
-            "top10-empty"
-          );
-
-        const managerBox =
-          document.getElementById(
-            "top10-manager-box"
-          );
-
-        const list =
-          document.getElementById(
-            "top10-posts-list"
-          );
-
-        const errorBox =
-          document.getElementById(
-            "top10-error"
-          );
+        const posts = Array.isArray(data)
+          ? data
+          : Array.isArray(data.posts)
+            ? data.posts
+            : [];
 
         /*
-         * Load Top 10 posts.
-         *
-         * The API will be connected
-         * in the next step.
-         */
+          Only public published posts are shown.
 
-        try {
+          The API returns all posts.
+          Draft posts are hidden here.
+        */
 
-          const response =
-            await fetch(
-              "/api/top10/posts"
+        const publishedPosts = posts.filter(post => {
+          return String(post.status || "").toLowerCase() === "published";
+        });
+
+
+        if (!publishedPosts.length) {
+
+          showMessage(
+            top10Grid,
+            "No Top 10 lists yet",
+            "There are no published Top 10 lists available right now."
+          );
+
+          return;
+        }
+
+
+        top10Grid.innerHTML = publishedPosts.map(post => {
+
+          const title =
+            post.title ||
+            "Top 10 Movies";
+
+          const description =
+            post.description ||
+            "A handpicked Top 10 movie list from FilmParadise BD.";
+
+          const poster =
+            post.main_poster_url ||
+            (
+              post.main_poster_key
+                ? "/api/top10/image?key=" +
+                  encodeURIComponent(post.main_poster_key)
+                : ""
             );
 
-          const data =
-            await response.json();
+          const slug = post.slug || "";
 
-          if (
-            !response.ok ||
-            !data.ok
-          ) {
-            throw new Error(
-              data.error ||
-              "Failed to load Top 10 posts."
-            );
+
+          return `
+            <a
+              class="top10-card"
+              href="/top-10.html?slug=${encodeURIComponent(slug)}"
+            >
+
+              <div class="top10-card-poster">
+
+                ${
+                  poster
+                    ? `
+                      <img
+                        src="${escapeHTML(poster)}"
+                        alt="${escapeHTML(title)}"
+                        loading="lazy"
+                      >
+                    `
+                    : `
+                      <div style="
+                        width:100%;
+                        height:100%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:#777;
+                        font-size:14px;
+                      ">
+                        No Poster
+                      </div>
+                    `
+                }
+
+                <span class="top10-badge">
+                  Top 10
+                </span>
+
+              </div>
+
+
+              <div class="top10-card-content">
+
+                <h2 class="top10-card-title">
+                  ${escapeHTML(title)}
+                </h2>
+
+                <p class="top10-card-description">
+                  ${escapeHTML(description)}
+                </p>
+
+                <div class="top10-card-footer">
+                  View full list →
+                </div>
+
+              </div>
+
+            </a>
+          `;
+
+        }).join("");
+
+
+      } catch (error) {
+
+        console.error("Top 10 archive error:", error);
+
+        showMessage(
+          top10Grid,
+          "Unable to load Top 10",
+          "Something went wrong while loading the Top 10 lists. Please try again later."
+        );
+      }
+    }
+
+
+
+    async function loadSinglePost(slug) {
+
+      archiveView.style.display = "none";
+      detailView.style.display = "";
+
+      detailHeader.innerHTML = `
+        <div class="top10-loading">
+          Loading Top 10 list...
+        </div>
+      `;
+
+      top10List.innerHTML = "";
+
+
+      try {
+
+        const response = await fetch(
+          "/api/top10/posts?slug=" +
+          encodeURIComponent(slug),
+          {
+            method: "GET",
+            headers: {
+              "Accept": "application/json"
+            },
+            cache: "no-store"
+          }
+        );
+
+
+        if (!response.ok) {
+
+          if (response.status === 404) {
+            throw new Error("Top 10 list not found.");
           }
 
-          const posts =
-            Array.isArray(data.posts)
-              ? data.posts
+          throw new Error("Unable to load this Top 10 list.");
+        }
+
+
+        const data = await response.json();
+
+
+        /*
+          The API may return:
+            { post: {...}, items: [...] }
+
+          or:
+            { ...post, items: [...] }
+
+          This handles both formats safely.
+        */
+
+        const post =
+          data.post ||
+          data;
+
+        const items =
+          Array.isArray(data.items)
+            ? data.items
+            : Array.isArray(post.items)
+              ? post.items
               : [];
 
-          loading.style.display =
-            "none";
 
-          if (
-            posts.length === 0
-          ) {
-            empty.style.display =
-              "block";
+        if (
+          String(post.status || "").toLowerCase() !== "published"
+        ) {
 
-            return;
-          }
+          detailHeader.innerHTML = `
+            <div class="top10-message">
+              <h2>Top 10 list not available</h2>
+              <p>This list has not been published yet.</p>
+            </div>
+          `;
 
-          managerBox.style.display =
-            "block";
-
-          posts.forEach(
-            (post) => {
-
-              const row =
-                document.createElement(
-                  "tr"
-                );
-
-              /*
-               * Title
-               */
-
-              const titleCell =
-                document.createElement(
-                  "td"
-                );
-
-              titleCell.className =
-                "top10-title-cell";
-
-              titleCell.textContent =
-                post.title || "";
-
-              /*
-               * Description
-               */
-
-              const descriptionCell =
-                document.createElement(
-                  "td"
-                );
-
-              descriptionCell.className =
-                "top10-description-cell";
-
-              descriptionCell.textContent =
-                post.description ||
-                "—";
-
-              /*
-               * Status
-               */
-
-              const statusCell =
-                document.createElement(
-                  "td"
-                );
-
-              const status =
-                document.createElement(
-                  "span"
-                );
-
-              status.className =
-                "top10-status";
-
-              status.textContent =
-                post.status || "draft";
-
-              statusCell.appendChild(
-                status
-              );
-
-              /*
-               * Updated date
-               */
-
-              const updatedCell =
-                document.createElement(
-                  "td"
-                );
-
-              if (
-                post.updated_at
-              ) {
-
-                const date =
-                  new Date(
-                    post.updated_at
-                  );
-
-                updatedCell.textContent =
-                  Number.isNaN(
-                    date.getTime()
-                  )
-                    ? post.updated_at
-                    : date.toLocaleDateString(
-                        "en-US",
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric"
-                        }
-                      );
-
-              } else {
-
-                updatedCell.textContent =
-                  "—";
-              }
-
-              /*
-               * Actions
-               */
-
-              const actionsCell =
-                document.createElement(
-                  "td"
-                );
-
-              const actions =
-                document.createElement(
-                  "div"
-                );
-
-              actions.className =
-                "top10-actions";
-
-              const edit =
-                document.createElement(
-                  "a"
-                );
-
-              edit.className =
-                "top10-action-btn";
-
-              edit.href =
-                `/admin/top-10-edit.html?id=${encodeURIComponent(
-                  post.id
-                )}`;
-
-              edit.textContent =
-                "Edit";
-
-              const view =
-                document.createElement(
-                  "a"
-                );
-
-              view.className =
-                "top10-action-btn";
-
-              view.href =
-                `/top-10.html?slug=${encodeURIComponent(
-                  post.slug || ""
-                )}`;
-
-              view.target =
-                "_blank";
-
-              view.textContent =
-                "View";
-
-              actions.appendChild(
-                edit
-              );
-
-              actions.appendChild(
-                view
-              );
-
-              actionsCell.appendChild(
-                actions
-              );
-
-              /*
-               * Add row.
-               */
-
-              row.appendChild(
-                titleCell
-              );
-
-              row.appendChild(
-                descriptionCell
-              );
-
-              row.appendChild(
-                statusCell
-              );
-
-              row.appendChild(
-                updatedCell
-              );
-
-              row.appendChild(
-                actionsCell
-              );
-
-              list.appendChild(
-                row
-              );
-            }
-          );
-
-        } catch (error) {
-
-          console.error(
-            "Top 10 Manager:",
-            error
-          );
-
-          loading.style.display =
-            "none";
-
-          errorBox.style.display =
-            "block";
-
-          errorBox.textContent =
-            error.message ||
-            "Unable to load Top 10 posts.";
+          return;
         }
 
+
+        document.title =
+          `${post.title || "Top 10"} | FilmParadise BD`;
+
+
+        detailHeader.innerHTML = `
+
+          <h1>
+            ${escapeHTML(post.title || "Top 10 Movies")}
+          </h1>
+
+          ${
+            post.description
+              ? `
+                <p>
+                  ${escapeHTML(post.description)}
+                </p>
+              `
+              : ""
+          }
+
+        `;
+
+
+        if (!items.length) {
+
+          showMessage(
+            top10List,
+            "No movies found",
+            "This Top 10 list does not contain any movies yet."
+          );
+
+          return;
+        }
+
+
+        /*
+          Always show #1 → #10 in correct order.
+        */
+
+        items.sort((a, b) => {
+          return Number(a.rank || 0) - Number(b.rank || 0);
+        });
+
+
+        top10List.innerHTML = items.map(item => {
+
+          const poster = posterUrl(item);
+
+          const year =
+            item.release_year
+              ? String(item.release_year)
+              : "";
+
+          const language =
+            item.language || "";
+
+
+          return `
+
+            <article class="top10-item">
+
+              <div class="top10-rank">
+                #${escapeHTML(item.rank)}
+              </div>
+
+
+              <div class="top10-item-poster">
+
+                ${
+                  poster
+                    ? `
+                      <img
+                        src="${escapeHTML(poster)}"
+                        alt="${escapeHTML(item.title || "Movie poster")}"
+                        loading="lazy"
+                      >
+                    `
+                    : `
+                      <div style="
+                        width:100%;
+                        height:100%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:#777;
+                        font-size:12px;
+                      ">
+                        No Poster
+                      </div>
+                    `
+                }
+
+              </div>
+
+
+              <div class="top10-item-info">
+
+                <h2>
+                  ${escapeHTML(item.title || "Untitled Movie")}
+                </h2>
+
+
+                <div class="top10-meta">
+
+                  ${
+                    year
+                      ? `<span>${escapeHTML(year)}</span>`
+                      : ""
+                  }
+
+                  ${
+                    language
+                      ? `<span>${escapeHTML(language)}</span>`
+                      : ""
+                  }
+
+                </div>
+
+
+                ${
+                  item.short_description
+                    ? `
+                      <p>
+                        ${escapeHTML(item.short_description)}
+                      </p>
+                    `
+                    : ""
+                }
+
+              </div>
+
+            </article>
+
+          `;
+
+        }).join("");
+
+
+      } catch (error) {
+
+        console.error("Top 10 detail error:", error);
+
+        detailHeader.innerHTML = "";
+
+        showMessage(
+          top10List,
+          "Unable to load this Top 10",
+          error.message ||
+          "Something went wrong while loading this list."
+        );
       }
-    );
+    }
+
+
+
+    function initTop10Page() {
+
+      const params =
+        new URLSearchParams(window.location.search);
+
+      const slug =
+        params.get("slug");
+
+
+      /*
+        /top-10.html
+          → Archive
+
+        /top-10.html?slug=top-10-horror-movies
+          → Individual Top 10 post
+      */
+
+      if (slug) {
+        loadSinglePost(slug);
+      } else {
+        loadArchive();
+      }
+    }
+
+
+    initTop10Page();
+
   </script>
 
 </body>
 </html>
+```
