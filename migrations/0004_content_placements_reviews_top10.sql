@@ -1,14 +1,6 @@
 -- FilmParadise BD
 -- Migration 0004
 -- Content placements + editorial review structure + Top 10
-
--- =========================================================
--- 1. Fix old database schema
--- =========================================================
-
-ALTER TABLE movies ADD COLUMN synopsis TEXT NOT NULL DEFAULT '';
-
--- =========================================================
 -- 2. Editorial review fields
 -- =========================================================
 
