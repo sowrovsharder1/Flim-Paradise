@@ -1,3 +1,4 @@
+```javascript
 (function(){
 
   const {apiFetch,esc,formatDate}=window.fp;
@@ -360,8 +361,7 @@
         news,
         trailers,
         series,
-        box,
-        top10
+        box
 
       ] = await Promise.all([
 
@@ -405,12 +405,6 @@
 
         apiFetch(
           '/articles?type=box-office&limit=8'
-        ),
-
-        /* TOP 10 */
-
-        apiFetch(
-          '/top10/posts'
         )
 
       ]);
@@ -540,31 +534,61 @@
 
       if(top10List){
 
-        const posts =
-          Array.isArray(top10?.posts)
-            ? top10.posts
-            : [];
+        /*
+         * Top 10 is loaded separately so that
+         * a Top 10 API problem cannot break
+         * the rest of the homepage.
+         */
 
-        const publishedPosts =
-          posts.filter(
-            post =>
-              String(post.status || '')
-                .toLowerCase() === 'published'
+        try{
+
+          const top10 =
+            await apiFetch('/top10/posts');
+
+          const posts =
+            Array.isArray(top10)
+              ? top10
+              : (
+                  Array.isArray(top10?.posts)
+                    ? top10.posts
+                    : []
+                );
+
+          const publishedPosts =
+            posts.filter(
+              post =>
+                String(post.status || '')
+                  .toLowerCase() === 'published'
+            );
+
+          top10List.innerHTML =
+            publishedPosts.length
+
+              ? publishedPosts
+                  .slice(0,8)
+                  .map(top10Card)
+                  .join('')
+
+              : `
+                <div class="empty">
+                  No Top 10 lists yet.
+                </div>
+              `;
+
+        }catch(top10Error){
+
+          console.error(
+            'FilmParadise Top 10 loading error:',
+            top10Error
           );
 
-        top10List.innerHTML =
-          publishedPosts.length
+          top10List.innerHTML = `
+            <div class="empty">
+              No Top 10 lists yet.
+            </div>
+          `;
 
-            ? publishedPosts
-                .slice(0,8)
-                .map(top10Card)
-                .join('')
-
-            : `
-              <div class="empty">
-                No Top 10 lists yet.
-              </div>
-            `;
+        }
 
       }
 
@@ -790,3 +814,4 @@
   );
 
 })();
+```
