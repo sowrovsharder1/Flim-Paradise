@@ -32,12 +32,16 @@ export async function onRequestGet({ request, env }) {
     const trailer = u.searchParams.get('trailer');
 
     const limit = Math.min(
-      Math.max(parseInt(u.searchParams.get('limit') || '24', 10) || 24, 1),
+      Math.max(
+        parseInt(u.searchParams.get('limit') || '24', 10) || 24,
+        1
+      ),
       100
     );
 
     let sql = `
       SELECT DISTINCT m.*,
+
         COALESCE(
           (
             SELECT ROUND(AVG(r.rating), 1)
@@ -64,10 +68,12 @@ export async function onRequestGet({ request, env }) {
     const conditions = [];
     const params = [];
 
+    /* CATEGORY FILTER */
     if (category) {
       sql += `
         JOIN movie_categories mc
           ON mc.movie_id = m.id
+
         JOIN categories c
           ON c.id = mc.category_id
       `;
@@ -76,54 +82,80 @@ export async function onRequestGet({ request, env }) {
       params.push(category);
     }
 
+    /* STATUS */
     if (status !== 'all') {
       conditions.push('m.status = ?');
       params.push(status);
     }
 
+    /* MOVIE / SERIES */
     if (type) {
       conditions.push('m.type = ?');
       params.push(type);
     }
 
+    /* FEATURED */
     if (featured === '1') {
       conditions.push('m.is_featured = 1');
     }
 
+    /* RECOMMENDED */
     if (recommended === '1') {
       conditions.push('m.is_recommended = 1');
     }
 
+    /* HOMEPAGE */
     if (home === '1') {
       conditions.push('m.show_home = 1');
     }
 
+    /* REVIEWS */
     if (reviews === '1') {
       conditions.push('m.show_review = 1');
     }
 
+    /* TRAILERS */
     if (trailer === '1') {
-      conditions.push("m.show_trailer = 1 AND m.trailer_url != ''");
+      conditions.push(`
+        m.show_trailer = 1
+        AND m.trailer_url IS NOT NULL
+        AND m.trailer_url != ''
+      `);
     }
 
+    /* SEARCH */
     if (q) {
-      conditions.push(
-        '(m.title LIKE ? OR m.genre LIKE ? OR m.language LIKE ?)'
-      );
+      conditions.push(`
+        (
+          m.title LIKE ?
+          OR m.genre LIKE ?
+          OR m.language LIKE ?
+        )
+      `);
 
       const search = `%${q}%`;
-      params.push(search, search, search);
+
+      params.push(
+        search,
+        search,
+        search
+      );
     }
 
+    /* WHERE */
     if (conditions.length) {
-      sql += ' WHERE ' + conditions.join(' AND ');
+      sql += `
+        WHERE ${conditions.join(' AND ')}
+      `;
     }
 
+    /* ORDER */
     sql += `
       ORDER BY
         m.is_featured DESC,
         m.is_recommended DESC,
         m.created_at DESC
+
       LIMIT ?
     `;
 
@@ -143,12 +175,19 @@ export async function onRequestGet({ request, env }) {
   }
 }
 
+
+/* =========================================================
+   CREATE MOVIE / SERIES
+   ========================================================= */
+
 export async function onRequestPost({ request, env }) {
+
   if (!await requireAuth(request, env)) {
     return unauthorized();
   }
 
   try {
+
     const db = getDB(env);
     const b = await request.json();
 
@@ -165,9 +204,11 @@ export async function onRequestPost({ request, env }) {
 
     const result = await db.prepare(`
       INSERT INTO movies(
+
         title,
         slug,
         type,
+
         poster_url,
         year,
         language,
@@ -175,9 +216,12 @@ export async function onRequestPost({ request, env }) {
         quality,
         imdb_rating,
         country,
+
         cast,
         director,
+
         synopsis,
+
         quick_summary,
         review_body,
         review_pros,
@@ -185,30 +229,50 @@ export async function onRequestPost({ request, env }) {
         who_should_watch,
         review_verdict,
         review_rating,
+
         trailer_url,
         box_office,
+
         is_featured,
         is_pinned,
+
         show_home,
         show_review,
         show_trailer,
+
         is_recommended,
+
         status
       )
 
       VALUES(
-        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+        ?,?,?,?,?,?,?,?,?,?,
+        ?,?,?,
+        ?,?,?,?,?,?,?,
+        ?,?,
+        ?,?,
+        ?,?,?,
+        ?,
+        ?
       )
     `).bind(
+
+      /* BASIC INFO */
 
       title,
       slug,
       b.type,
 
       safeText(b.poster_url, 2000),
-      b.year ? Number(b.year) : null,
+
+      b.year
+        ? Number(b.year)
+        : null,
+
       safeText(b.language, 120),
+
       safeText(b.genre, 300),
+
       safeText(b.quality, 120),
 
       b.imdb_rating !== '' && b.imdb_rating != null
@@ -216,33 +280,77 @@ export async function onRequestPost({ request, env }) {
         : null,
 
       safeText(b.country, 120),
+
       safeText(b.cast, 1000),
+
       safeText(b.director, 300),
 
       safeText(b.synopsis, 12000),
+
+
+      /* EDITORIAL CONTENT */
+
       safeText(b.quick_summary, 12000),
+
       safeText(b.review_body, 20000),
+
       safeText(b.review_pros, 8000),
+
       safeText(b.review_cons, 8000),
+
       safeText(b.who_should_watch, 10000),
+
       safeText(b.review_verdict, 10000),
 
       b.review_rating !== '' && b.review_rating != null
         ? Number(b.review_rating)
         : null,
 
+
+      /* TRAILER / BOX OFFICE */
+
       safeText(b.trailer_url, 1000),
+
       safeText(b.box_office, 300),
 
-      b.is_featured ? 1 : 0,
 
-      b.is_pinned ? 1 : 0,
+      /* FEATURED */
 
-      b.show_home ? 1 : 0,
-      b.show_review ? 1 : 0,
-      b.show_trailer ? 1 : 0,
+      b.is_featured
+        ? 1
+        : 0,
 
-      b.is_recommended ? 1 : 0,
+
+      /* LEGACY PINNED */
+
+      b.is_pinned
+        ? 1
+        : 0,
+
+
+      /* SITE PLACEMENT */
+
+      b.show_home
+        ? 1
+        : 0,
+
+      b.show_review
+        ? 1
+        : 0,
+
+      b.show_trailer
+        ? 1
+        : 0,
+
+
+      /* RECOMMENDED */
+
+      b.is_recommended
+        ? 1
+        : 0,
+
+
+      /* STATUS */
 
       b.status === 'published'
         ? 'published'
@@ -250,7 +358,13 @@ export async function onRequestPost({ request, env }) {
 
     ).run();
 
+
     const id = result.meta.last_row_id;
+
+
+    /* =====================================================
+       MOVIE META
+       ===================================================== */
 
     await db.prepare(`
       INSERT INTO movie_meta(
@@ -258,45 +372,88 @@ export async function onRequestPost({ request, env }) {
         duration,
         release_date
       )
+
       VALUES(?,?,?)
 
       ON CONFLICT(movie_id)
+
       DO UPDATE SET
+
         duration = excluded.duration,
+
         release_date = excluded.release_date
+
     `).bind(
+
       id,
-      safeText(b.duration, 80),
-      safeText(b.release_date, 40)
+
+      safeText(
+        b.duration,
+        80
+      ),
+
+      safeText(
+        b.release_date,
+        40
+      )
+
     ).run();
+
+
+    /* =====================================================
+       CATEGORIES
+       ===================================================== */
 
     const cats = Array.isArray(b.category_ids)
       ? b.category_ids
       : [];
 
+
     for (const cid of cats) {
+
       await db.prepare(`
         INSERT OR IGNORE INTO movie_categories(
           movie_id,
           category_id
         )
+
         VALUES(?,?)
+
       `).bind(
+
         id,
+
         Number(cid)
+
       ).run();
+
     }
 
+
+    /* =====================================================
+       RESPONSE
+       ===================================================== */
+
     return json({
+
       id,
+
       slug
+
     }, 201);
 
+
   } catch (e) {
+
     return badRequest(
+
       String(e.message).includes('UNIQUE')
+
         ? 'This slug already exists.'
+
         : e.message
+
     );
+
   }
 }
