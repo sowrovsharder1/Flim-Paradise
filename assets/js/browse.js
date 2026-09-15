@@ -1,465 +1,137 @@
-```javascript
-(function () {
-  const params = new URLSearchParams(location.search);
-
-  const articleType = params.get('article_type') || '';
-  const trailer = params.get('trailer') === '1';
-  const recommended = params.get('recommended') === '1';
-  const home = params.get('home') === '1';
-
-  /*
-    Current browse.html uses:
-
-    #pageQuery
-    #movieGrid
-    #articleGrid
-
-    So this JS uses those exact IDs.
-  */
-
-  const movieGrid = document.getElementById('movieGrid');
-  const articleGrid = document.getElementById('articleGrid');
-  const pageTitle = document.getElementById('pageQuery');
-
-  const { apiFetch, esc } = window.fp;
-
-
-  /* =========================================================
-     MOVIE CARD
-     ========================================================= */
-
-  function movieCard(m) {
-
-    const poster = m.poster_url
-      ? `
-        <img
-          src="${esc(m.poster_url)}"
-          alt="${esc(m.title)}"
-          loading="lazy"
-        >
-      `
-      : `
-        <div class="article-thumb">
-          <span>${esc(m.title)}</span>
-        </div>
-      `;
-
-
-    return `
-      <a
-        class="movie-card"
-        href="/movie.html?slug=${encodeURIComponent(m.slug)}"
-      >
-
-        <div class="poster-wrap">
-
-          ${poster}
-
-          ${
-            m.is_featured
-              ? `<span class="pin">FEATURED</span>`
-              : ''
-          }
-
-          ${
-            m.type === 'series' || m.type === 'web_series'
-              ? `<span class="type-badge">SERIES</span>`
-              : `<span class="type-badge">MOVIE</span>`
-          }
-
-        </div>
-
-
-        <div class="card-info">
-
-          <div class="card-title">
-            ${esc(m.title)}
-          </div>
-
-
-          <div class="card-meta">
-
-            ${esc(m.year || '')}
-
-            ${
-              m.language
-                ? ` · ${esc(m.language)}`
-                : ''
-            }
-
-            ${
-              m.imdb_rating
-                ? ` · IMDb ${esc(m.imdb_rating)}`
-                : ''
-            }
-
-          </div>
-
-
-          ${
-            m.quick_summary || m.synopsis
-              ? `
-                <div class="card-summary">
-                  ${esc(
-                    m.quick_summary ||
-                    m.synopsis ||
-                    ''
-                  )}
-                </div>
-              `
-              : ''
-          }
-
-        </div>
-
-      </a>
-    `;
-  }
-
-
-
-  /* =========================================================
-     ARTICLE CARD
-     ========================================================= */
-
-  function articleCard(a) {
-
-    const image = a.cover_url
-      ? `
-        <img
-          src="${esc(a.cover_url)}"
-          alt="${esc(a.title)}"
-          loading="lazy"
-        >
-      `
-      : `
-        <span>FILM</span>
-      `;
-
-
-    return `
-      <a
-        class="article-card"
-        href="/article.html?slug=${encodeURIComponent(a.slug)}"
-      >
-
-        <div class="article-thumb">
-          ${image}
-        </div>
-
-
-        <div class="article-body">
-
-          <div class="eyebrow">
-            ${esc(
-              String(a.content_type || '')
-                .replace(/-/g, ' ')
-                .toUpperCase()
-            )}
-          </div>
-
-
-          <h3>
-            ${esc(a.title)}
-          </h3>
-
-
-          ${
-            a.excerpt
-              ? `
-                <p>
-                  ${esc(a.excerpt)}
-                </p>
-              `
-              : ''
-          }
-
-
-          ${
-            a.published_at || a.created_at
-              ? `
-                <time>
-                  ${esc(
-                    a.published_at ||
-                    a.created_at ||
-                    ''
-                  )}
-                </time>
-              `
-              : ''
-          }
-
-        </div>
-
-      </a>
-    `;
-  }
-
-
-
-  /* =========================================================
-     LOAD MOVIES
-     ========================================================= */
-
-  async function loadMovies(endpoint, heading) {
-
-    pageTitle.textContent = heading;
-
-    articleGrid.innerHTML = '';
-
-    movieGrid.innerHTML = `
-      <div class="loading">
-        Loading...
-      </div>
-    `;
-
-
-    const data = await apiFetch(endpoint);
-
-    const movies = Array.isArray(data.movies)
-      ? data.movies
-      : [];
-
-
-    if (!movies.length) {
-
-      movieGrid.innerHTML = `
-        <div class="empty">
-          No titles found.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    movieGrid.innerHTML =
-      movies
-        .map(movieCard)
-        .join('');
-  }
-
-
-
-  /* =========================================================
-     LOAD ARTICLES
-     ========================================================= */
-
-  async function loadArticles(type, heading) {
-
-    pageTitle.textContent = heading;
-
-    movieGrid.innerHTML = '';
-
-
-    articleGrid.innerHTML = `
-      <div class="loading">
-        Loading...
-      </div>
-    `;
-
-
-    const data = await apiFetch(
-      '/articles?type=' +
-      encodeURIComponent(type) +
-      '&limit=50'
-    );
-
-
-    const articles = Array.isArray(data.articles)
-      ? data.articles
-      : [];
-
-
-    if (!articles.length) {
-
-      articleGrid.innerHTML = `
-        <div class="empty">
-          No ${esc(heading.toLowerCase())} found.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    articleGrid.innerHTML =
-      articles
-        .map(articleCard)
-        .join('');
-  }
-
-
-
-  /* =========================================================
-     MAIN LOADER
-     ========================================================= */
-
-  async function load() {
-
-
-    /* ---------------------------------------------------------
-       REVIEWS
-       --------------------------------------------------------- */
-
+(async function() {
+  const { apiFetch, esc, formatDate } = window.fp || {
+    apiFetch: async (url) => { const r = await fetch(url); return r.json(); },
+    esc: (s) => s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '',
+    formatDate: (d) => d ? new Date(d).toLocaleDateString() : ''
+  };
+
+  const container = document.getElementById('browseGrid') || document.getElementById('grid') || document.querySelector('main');
+  const pageTitleEl = document.getElementById('pageTitle') || document.querySelector('h1');
+  
+  const params = new URLSearchParams(window.location.search);
+  const articleType = (params.get('article_type') || '').toLowerCase();
+  const isTrailer = params.get('trailer') === '1';
+  const query = (params.get('q') || '').trim();
+  const isPinned = params.get('pinned') === '1';
+
+  let pageHeading = 'Browse';
+  if (articleType === 'review') pageHeading = 'Reviews';
+  else if (articleType === 'news') pageHeading = 'Latest News';
+  else if (isTrailer) pageHeading = 'Trailers';
+  else if (articleType === 'box-office' || articleType === 'box_office') pageHeading = 'Box Office Collection';
+  else if (articleType === 'recommendation' || articleType === 'top10' || articleType === 'top-10') pageHeading = 'Top 10 & Recommendations';
+  
+  if (pageTitleEl) pageTitleEl.textContent = pageHeading;
+  document.title = `${pageHeading} — FilmParadise BD`;
+
+  try {
+    let items = [];
+
+    const [articlesRes, moviesRes] = await Promise.allSettled([
+      apiFetch('/api/articles').catch(() => apiFetch('/articles').catch(() => [])),
+      apiFetch('/api/movies').catch(() => apiFetch('/movies').catch(() => []))
+    ]);
+
+    const rawArticles = (articlesRes.status === 'fulfilled' && articlesRes.value) ? (articlesRes.value.articles || articlesRes.value || []) : [];
+    const rawMovies = (moviesRes.status === 'fulfilled' && moviesRes.value) ? (moviesRes.value.movies || moviesRes.value || []) : [];
+
+    const movieItems = rawMovies.map(m => ({
+      id: m.id,
+      title: m.title,
+      slug: m.slug,
+      type: 'movie',
+      item_type: m.type || 'MOVIE',
+      poster_url: m.poster_url,
+      summary: m.synopsis || m.summary || '',
+      rating: m.imdb_rating || m.rating,
+      year: m.year,
+      trailer_url: m.trailer_url,
+      box_office: m.box_office || m.boxOffice,
+      created_at: m.created_at,
+      is_pinned: m.is_pinned || m.pinned
+    }));
+
+    const articleItems = rawArticles.map(a => ({
+      id: a.id,
+      title: a.title,
+      slug: a.slug,
+      type: 'article',
+      article_type: (a.article_type || a.type || '').toLowerCase(),
+      poster_url: a.cover_url || a.poster_url,
+      summary: a.excerpt || a.summary || '',
+      created_at: a.created_at,
+      trailer_url: a.trailer_url,
+      box_office: a.box_office,
+      is_pinned: a.is_pinned || a.pinned
+    }));
+
+    // STRICT FILTERING LOGIC
     if (articleType === 'review') {
+      items = articleItems.filter(a => a.article_type === 'review');
+    } else if (articleType === 'news') {
+      items = articleItems.filter(a => a.article_type === 'news');
+    } else if (isTrailer) {
+      items = [...movieItems, ...articleItems].filter(x => x.trailer_url && x.trailer_url.trim() !== '');
+    } else if (articleType === 'box-office' || articleType === 'box_office') {
+      items = [
+        ...articleItems.filter(a => a.article_type === 'box-office' || a.article_type === 'box_office'),
+        ...movieItems.filter(m => m.box_office && m.box_office !== 'N/A' && m.box_office !== '—' && m.box_office.trim() !== '')
+      ];
+    } else if (articleType === 'recommendation' || articleType === 'top10' || articleType === 'top-10') {
+      items = [
+        ...articleItems.filter(a => ['recommendation', 'top10', 'top-10'].includes(a.article_type)),
+        ...movieItems.filter(m => m.is_pinned)
+      ];
+    } else if (isPinned) {
+      items = [...movieItems, ...articleItems].filter(x => x.is_pinned);
+    } else if (query) {
+      const q = query.toLowerCase();
+      items = [...movieItems, ...articleItems].filter(x => x.title && x.title.toLowerCase().includes(q));
+    } else {
+      items = [...movieItems, ...articleItems];
+    }
 
-      await loadArticles(
-        'review',
-        'Latest Reviews'
-      );
-
+    if (!items || items.length === 0) {
+      container.innerHTML = `
+        <div class="container section" style="text-align:center; padding:60px 20px;">
+          <h2 style="color:#fff;">${esc(pageHeading)}</h2>
+          <p style="color:#888; margin-top:10px;">No content found in this category yet. Please add content from Admin Panel.</p>
+        </div>`;
       return;
     }
 
+    const placeholder = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600"><rect width="100%" height="100%" fill="#121216"/><text x="50%" y="50%" fill="#777" font-family="Arial" font-size="22" text-anchor="middle">FILM PARADISE</text></svg>`);
 
+    container.innerHTML = `
+      <div class="container section">
+        <div class="section-head" style="margin-bottom:25px;">
+          <h2>${esc(pageHeading)} <small style="font-size:14px;color:#888;font-weight:normal;">(${items.length} items)</small></h2>
+        </div>
+        <div class="article-grid four">
+          ${items.map(item => {
+            const link = item.type === 'movie' ? `/movie.html?slug=${encodeURIComponent(item.slug)}` : `/article.html?slug=${encodeURIComponent(item.slug)}`;
+            const img = item.poster_url || placeholder;
+            return `
+              <a href="${link}" class="card-item">
+                <div class="card-media">
+                  <img src="${esc(img)}" onerror="this.src='${placeholder}'" alt="${esc(item.title)}" loading="lazy">
+                  ${item.rating ? `<span class="badge-rating" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.8);padding:3px 8px;border-radius:4px;color:#f5c518;font-weight:bold;font-size:12px;">★ ${item.rating}</span>` : ''}
+                </div>
+                <div class="card-content" style="padding:12px 0;">
+                  <span class="card-tag" style="color:#e50914;font-size:11px;font-weight:bold;letter-spacing:1px;">${esc(item.item_type || item.article_type || 'POST').toUpperCase()}</span>
+                  <h3 class="card-title" style="margin:5px 0;font-size:16px;">${esc(item.title)}</h3>
+                  ${item.box_office ? `<p style="color:#e50914;font-weight:bold;font-size:13px;margin:3px 0;">💰 ${esc(item.box_office)}</p>` : ''}
+                  ${item.summary ? `<p class="card-excerpt" style="color:#aaa;font-size:13px;line-height:1.4;">${esc(item.summary.slice(0, 80))}...</p>` : ''}
+                </div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
 
-    /* ---------------------------------------------------------
-       NEWS
-       --------------------------------------------------------- */
-
-    if (articleType === 'news') {
-
-      await loadArticles(
-        'news',
-        'Latest News'
-      );
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       BOX OFFICE
-       --------------------------------------------------------- */
-
-    if (articleType === 'box-office') {
-
-      await loadArticles(
-        'box-office',
-        'Box Office'
-      );
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       TOP 10
-       --------------------------------------------------------- */
-
-    if (articleType === 'recommendation') {
-
-      window.location.href =
-        '/top-10.html';
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       TRAILERS
-       --------------------------------------------------------- */
-
-    if (trailer) {
-
-      await loadMovies(
-        '/movies?trailer=1&limit=100',
-        'Latest Trailers'
-      );
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       RECOMMENDED
-       --------------------------------------------------------- */
-
-    if (recommended) {
-
-      await loadMovies(
-        '/movies?recommended=1&limit=100',
-        'Recommended For You'
-      );
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       HOMEPAGE MOVIES
-       --------------------------------------------------------- */
-
-    if (home) {
-
-      await loadMovies(
-        '/movies?home=1&limit=100',
-        'Movies'
-      );
-
-      return;
-    }
-
-
-
-    /* ---------------------------------------------------------
-       DEFAULT
-       --------------------------------------------------------- */
-
-    await loadMovies(
-      '/movies?limit=100',
-      'Movies & Series'
-    );
-
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `<div class="empty" style="text-align:center; padding:40px; color:#888;">Error loading content. Please refresh the page.</div>`;
   }
-
-
-
-  /* =========================================================
-     START
-     ========================================================= */
-
-  document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-
-      load().catch(function (err) {
-
-        console.error(
-          'Browse page error:',
-          err
-        );
-
-
-        if (movieGrid) {
-
-          movieGrid.innerHTML = `
-            <div class="empty">
-              Could not load content right now.
-            </div>
-          `;
-        }
-
-
-        if (articleGrid) {
-
-          articleGrid.innerHTML = `
-            <div class="empty">
-              Could not load content right now.
-            </div>
-          `;
-        }
-
-      });
-
-    }
-  );
-
 })();
-```
