@@ -1,50 +1,114 @@
 (function () {
-  const { apiFetch, esc, formatDate } = window.fp;
+  const detail = document.getElementById('detail');
 
   let movieId = null;
 
-  const placeholder =
-    'data:image/svg+xml;charset=UTF-8,' +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg"
-           viewBox="0 0 400 600">
-        <rect width="100%" height="100%" fill="#121216"/>
-        <text x="50%" y="50%"
-              fill="#777"
-              font-family="Arial"
-              font-size="22"
-              text-anchor="middle">
-          FILM PARADISE
-        </text>
-      </svg>
-    `);
+  const { apiFetch, esc } = window.fp;
 
-  function stars(rating) {
-    const n = Math.round(Number(rating) || 0);
+  function paragraphs(text) {
+    if (!text) return '';
+    return String(text)
+      .split(/\n\s*\n/)
+      .map(p => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`)
+      .join('');
+  }
 
-    return Array.from(
-      { length: 10 },
-      (_, i) =>
-        `<span class="star ${i < n ? 'on' : ''}">★</span>`
+  function listItems(text) {
+    if (!text) return '';
+
+    return String(text)
+      .split(/\n+/)
+      .map(x => x.trim())
+      .filter(Boolean)
+      .map(x => `<li>${esc(x)}</li>`)
+      .join('');
+  }
+
+  function stars(value) {
+    const n = Math.max(0, Math.min(10, Number(value) || 0));
+    const full = Math.round(n / 2);
+
+    return Array.from({ length: 5 }, (_, i) =>
+      `<span class="${i < full ? 'star on' : 'star'}">★</span>`
     ).join('');
   }
 
-  function toEmbed(url) {
+  function ratingCard(value, label, extra = '') {
+    const hasRating =
+      value !== null &&
+      value !== undefined &&
+      value !== '' &&
+      !Number.isNaN(Number(value));
+
+    return `
+      <div class="movie-rating-card">
+        <div class="movie-rating-value">
+          ${hasRating ? esc(Number(value).toFixed(1)) : '—'}
+        </div>
+
+        <div class="movie-rating-stars">
+          ${hasRating ? stars(value) : '<span class="rating-empty">Not rated</span>'}
+        </div>
+
+        <div class="movie-rating-label">
+          ${esc(label)}
+        </div>
+
+        ${extra ? `<div class="movie-rating-extra">${esc(extra)}</div>` : ''}
+      </div>
+    `;
+  }
+
+  function metaRow(label, value) {
+    if (!value) return '';
+
+    return `
+      <div class="movie-meta-row">
+        <span class="movie-meta-label">${esc(label)}:</span>
+        <span class="movie-meta-value">${esc(value)}</span>
+      </div>
+    `;
+  }
+
+  function detailRow(label, value) {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return '';
+    }
+
+    return `
+      <div class="movie-detail-row">
+        <span class="movie-detail-label">${esc(label)}:</span>
+        <span class="movie-detail-value">${esc(value)}</span>
+      </div>
+    `;
+  }
+
+  function trailerEmbed(url) {
+    if (!url) return '';
+
     try {
-      const x = new URL(url);
+      const u = new URL(url);
 
-      if (x.hostname.includes('youtube.com')) {
+      if (u.hostname.includes('youtube.com')) {
         const id =
-          x.searchParams.get('v') ||
-          x.pathname.split('/').pop();
+          u.searchParams.get('v') ||
+          u.pathname.split('/').filter(Boolean).pop();
 
-        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+        if (id) {
+          return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+        }
       }
 
-      if (x.hostname === 'youtu.be') {
-        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(
-          x.pathname.slice(1)
-        )}`;
+      if (u.hostname === 'youtu.be') {
+        const id = u.pathname.slice(1);
+
+        if (id) {
+          return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+        }
       }
 
       return url;
@@ -53,993 +117,509 @@
     }
   }
 
-  /*
-   * Convert normal text into paragraphs.
-   */
-  function paragraphs(text) {
-    if (!text || !String(text).trim()) {
-      return '';
-    }
-
-    return String(text)
-      .trim()
-      .split(/\n\s*\n/)
-      .map(
-        p => `<p>${esc(p.trim())}</p>`
-      )
-      .join('');
-  }
-
-  /*
-   * Convert line-by-line text into a list.
-   *
-   * Admin can write:
-   *
-   * Strong action sequences
-   * Good atmosphere
-   * Interesting infected design
-   *
-   * or:
-   *
-   * - Strong action sequences
-   * - Good atmosphere
-   */
-  function bulletList(text) {
-    if (!text || !String(text).trim()) {
-      return '';
-    }
-
-    const items = String(text)
-      .split(/\n/)
-      .map(x => x.trim())
-      .filter(Boolean);
-
-    if (!items.length) {
-      return '';
-    }
-
-    return `
-      <ul class="editorial-list">
-        ${items
-          .map(
-            item =>
-              `<li>${esc(
-                item.replace(/^[-•*]\s*/, '')
-              )}</li>`
-          )
-          .join('')}
-      </ul>
-    `;
-  }
-
-  /*
-   * FilmParadise editorial rating.
-   */
-  function renderRating(rating) {
-    if (
-      rating === null ||
-      rating === undefined ||
-      rating === '' ||
-      Number.isNaN(Number(rating))
-    ) {
-      return '';
-    }
-
-    const value =
-      Number(rating).toFixed(1);
-
-    return `
-      <div class="filmparadise-rating">
-
-        <div class="fp-rating-number">
-          ${esc(value)}
-        </div>
-
-        <div class="fp-rating-info">
-
-          <div class="fp-rating-stars">
-            ${stars(Number(rating))}
-          </div>
-
-          <strong>
-            FilmParadise Rating
-          </strong>
-
-          <span>
-            Our editorial rating
-          </span>
-
-        </div>
-
-      </div>
-    `;
-  }
-
-  /*
-   * Audience reviews.
-   */
-  function renderAudienceReviews(reviews) {
-    if (
-      !Array.isArray(reviews) ||
-      !reviews.length
-    ) {
+  function renderAudienceReviews(reviews = []) {
+    if (!reviews.length) {
       return `
-        <div class="empty">
-          No approved audience reviews yet.
-          Be the first.
+        <div class="audience-empty">
+          <p>No audience reviews yet.</p>
+          <p>Be the first person to share your opinion.</p>
         </div>
       `;
     }
 
-    return reviews
-      .map(
-        r => `
-          <article class="review">
+    return reviews.map(r => `
+      <article class="audience-review">
+        <div class="audience-review-top">
+          <strong>${esc(r.name || 'Anonymous')}</strong>
 
-            <div class="review-top">
+          <span class="audience-review-rating">
+            ${esc(Number(r.rating || 0).toFixed(1))}/10
+          </span>
+        </div>
 
-              <strong>
-                ${esc(
-                  r.author_name ||
-                  'Anonymous'
-                )}
-              </strong>
+        <div class="audience-review-stars">
+          ${stars(r.rating)}
+        </div>
 
-              <span class="score">
-                ${esc(r.rating)}/10
-              </span>
-
-            </div>
-
-            <div class="stars-row">
-              ${stars(r.rating)}
-            </div>
-
-            <p>
-              ${esc(r.comment || '')}
-            </p>
-
-            <time>
-              ${formatDate(r.created_at)}
-            </time>
-
-          </article>
-        `
-      )
-      .join('');
+        <p>${esc(r.body || '')}</p>
+      </article>
+    `).join('');
   }
 
   async function load() {
-    const slug =
-      new URLSearchParams(
-        location.search
-      ).get('slug');
+    const params = new URLSearchParams(location.search);
+    const slug = params.get('slug');
 
     if (!slug) {
-      document.getElementById(
-        'detail'
-      ).innerHTML = `
-        <div class="empty">
-          Movie not found.
+      detail.innerHTML = `
+        <div class="container">
+          <div class="form-msg err">
+            Movie not found.
+          </div>
         </div>
       `;
-
       return;
     }
 
     try {
-      const data =
-        await apiFetch(
-          '/movies/' +
-          encodeURIComponent(slug)
-        );
+      const data = await apiFetch(
+        '/movies/' + encodeURIComponent(slug)
+      );
 
-      if (
-        !data ||
-        !data.movie
-      ) {
-        throw new Error(
-          'Movie not found.'
-        );
-      }
-
-      const m = data.movie;
+      const m = data.movie || {};
+      const reviews = data.reviews || [];
 
       movieId = m.id;
 
-      /*
-       * Page title.
-       */
-      document.title =
-        `${m.title} — FilmParadise BD`;
-
-      /*
-       * Facts shown in the movie header.
-       */
-      const facts = [
-        m.genre,
-        m.language,
-        m.country,
-        m.duration,
-        m.quality
-      ]
-        .filter(Boolean)
-        .map(
-          x =>
-            `<span>${esc(x)}</span>`
-        )
-        .join('');
-
-      /*
-       * Quick Summary.
-       *
-       * New quick_summary field first.
-       * Old synopsis is used as fallback
-       * for older titles.
-       */
-      const quickSummary =
-        m.quick_summary ||
-        m.synopsis ||
-        '';
-
-      /*
-       * Editorial fields.
-       */
-      const reviewBody =
-        m.review_body || '';
-
-      const reviewPros =
-        m.review_pros || '';
-
-      const reviewCons =
-        m.review_cons || '';
-
-      const whoShouldWatch =
-        m.who_should_watch || '';
-
-      const reviewVerdict =
-        m.review_verdict || '';
-
-      /*
-       * FilmParadise rating.
-       */
-      const filmParadiseRating =
-        renderRating(
-          m.review_rating
-        );
-
-      /*
-       * Audience rating.
-       */
       const audienceRating =
         m.audience_rating !== null &&
         m.audience_rating !== undefined
-          ? Number(
-              m.audience_rating
-            ).toFixed(1)
-          : '0.0';
+          ? Number(m.audience_rating)
+          : 0;
 
-      /*
-       * Render page.
-       */
-      document.getElementById(
-        'detail'
-      ).innerHTML = `
+      const audienceCount =
+        Number(m.review_count || reviews.length || 0);
 
-        <!-- ================================= -->
-        <!-- MOVIE HEADER -->
-        <!-- ================================= -->
+      const filmParadiseRating =
+        m.review_rating !== null &&
+        m.review_rating !== undefined &&
+        m.review_rating !== ''
+          ? Number(m.review_rating)
+          : null;
 
-        <div class="detail-grid">
+      const quickSummary =
+        m.quick_summary ||
+        '';
 
-          <div class="detail-poster">
+      const reviewBody =
+        m.review_body ||
+        '';
 
-            <img
-              src="${esc(
-                m.poster_url ||
-                placeholder
-              )}"
-              onerror="this.src='${placeholder}'"
-              alt="${esc(m.title)} poster"
-            >
+      const reviewPros =
+        m.review_pros ||
+        '';
 
-          </div>
+      const reviewCons =
+        m.review_cons ||
+        '';
+
+      const whoShouldWatch =
+        m.who_should_watch ||
+        '';
+
+      const reviewVerdict =
+        m.review_verdict ||
+        '';
+
+      const hasEditorialContent =
+        reviewBody ||
+        reviewPros ||
+        reviewCons ||
+        whoShouldWatch ||
+        reviewVerdict ||
+        filmParadiseRating !== null;
+
+      const showReviewSection =
+        Number(m.show_review) === 1 ||
+        Boolean(hasEditorialContent);
+
+      detail.innerHTML = `
+        <div class="container">
+
+          <!-- MOVIE HEADER -->
+          <section class="movie-header">
+
+            <div class="movie-poster-wrap">
+              <img
+                class="movie-poster"
+                src="${esc(m.poster_url || '')}"
+                alt="${esc(m.title || 'Movie poster')}"
+                loading="eager"
+                onerror="this.style.display='none'"
+              >
+            </div>
+
+            <div class="movie-header-content">
+
+              <div class="movie-kicker">
+                ${esc(m.type || 'movie')} · ${esc(m.year || '')}
+              </div>
+
+              <h1 class="movie-title">
+                ${esc(m.title || '')}
+              </h1>
+
+              <div class="movie-tags">
+                ${esc(m.genre || '')}
+                ${m.language ? ` · ${esc(m.language)}` : ''}
+                ${m.country ? ` · ${esc(m.country)}` : ''}
+                ${m.duration ? ` · ${esc(m.duration)} min` : ''}
+                ${m.quality ? ` · ${esc(m.quality)}` : ''}
+              </div>
+
+              <!-- RATING FLOW -->
+              <div class="movie-rating-flow">
+
+                ${ratingCard(
+                  m.imdb_rating,
+                  'IMDb'
+                )}
+
+                ${ratingCard(
+                  filmParadiseRating,
+                  'FilmParadise Rating'
+                )}
+
+                ${ratingCard(
+                  audienceRating,
+                  'Audience Rating',
+                  `(${audienceCount})`
+                )}
+
+              </div>
+
+              <!-- BASIC MOVIE INFO -->
+              <div class="movie-meta">
+
+                ${metaRow(
+                  'Director',
+                  m.director
+                )}
+
+                ${metaRow(
+                  'Cast',
+                  m.cast
+                )}
+
+                ${metaRow(
+                  'Box office',
+                  m.box_office
+                )}
+
+              </div>
+
+            </div>
+          </section>
 
 
-          <div>
+          <!-- MOVIE DETAILS -->
+          <section class="content-section movie-details-section">
 
-            <div class="eyebrow">
+            <div class="section-head">
+              <h2>Movie Details</h2>
+            </div>
 
-              ${esc(
-                m.type ||
-                'Movie'
+            <div class="movie-detail-list">
+
+              ${detailRow('Title', m.title)}
+
+              ${detailRow('Type', m.type)}
+
+              ${detailRow('Year', m.year)}
+
+              ${detailRow(
+                'Release Date',
+                m.release_date
               )}
 
-              ${
-                m.year
-                  ? ` · ${esc(m.year)}`
+              ${detailRow(
+                'Language',
+                m.language
+              )}
+
+              ${detailRow(
+                'Country',
+                m.country
+              )}
+
+              ${detailRow(
+                'Genre',
+                m.genre
+              )}
+
+              ${detailRow(
+                'Quality',
+                m.quality
+              )}
+
+              ${detailRow(
+                'Duration',
+                m.duration
+                  ? `${m.duration} min`
                   : ''
-              }
+              )}
+
+              ${detailRow(
+                'Director',
+                m.director
+              )}
+
+              ${detailRow(
+                'Cast',
+                m.cast
+              )}
+
+              ${detailRow(
+                'Box Office',
+                m.box_office
+              )}
 
             </div>
 
-
-            <h1 class="detail-title">
-              ${esc(m.title)}
-            </h1>
+          </section>
 
 
-            ${
-              facts
-                ? `
-                  <div class="facts">
-                    ${facts}
+          <!-- QUICK SUMMARY -->
+          ${
+            quickSummary
+              ? `
+                <section class="content-section editorial-section">
+
+                  <div class="section-head">
+                    <h2>Quick Summary</h2>
                   </div>
-                `
-                : ''
-            }
+
+                  <div class="editorial-content quick-summary-content">
+                    ${paragraphs(quickSummary)}
+                  </div>
+
+                </section>
+              `
+              : ''
+          }
 
 
-            <div class="rating-line">
+          <!-- FILMPARADISE REVIEW -->
+          ${
+            showReviewSection
+              ? `
+                <section class="content-section editorial-section filmparadise-review-section">
 
-              <div>
+                  <div class="section-head">
+                    <h2>FilmParadise Review</h2>
+                  </div>
 
-                <strong>
-                  ${m.imdb_rating ?? '—'}
-                </strong>
+                  ${
+                    reviewBody
+                      ? `
+                        <div class="editorial-content filmparadise-review-body">
+                          ${paragraphs(reviewBody)}
+                        </div>
+                      `
+                      : `
+                        <div class="editorial-empty">
+                          FilmParadise editorial review has not been published yet.
+                        </div>
+                      `
+                  }
 
-                <small>
-                  IMDb
-                </small>
+                </section>
+              `
+              : ''
+          }
 
-              </div>
+
+          <!-- WHAT WORKS -->
+          ${
+            reviewPros
+              ? `
+                <section class="content-section editorial-section">
+
+                  <div class="section-head">
+                    <h2>What Works</h2>
+                  </div>
+
+                  <div class="editorial-list">
+                    <ul>
+                      ${listItems(reviewPros)}
+                    </ul>
+                  </div>
+
+                </section>
+              `
+              : ''
+          }
 
 
-              <div>
+          <!-- WHAT DOESN'T WORK -->
+          ${
+            reviewCons
+              ? `
+                <section class="content-section editorial-section">
 
-                <strong>
-                  ${esc(
-                    audienceRating
-                  )}
-                </strong>
+                  <div class="section-head">
+                    <h2>What Doesn't Work</h2>
+                  </div>
 
-                <small>
-                  Audience
-                  (${m.review_count || 0})
-                </small>
+                  <div class="editorial-list">
+                    <ul>
+                      ${listItems(reviewCons)}
+                    </ul>
+                  </div>
 
-              </div>
+                </section>
+              `
+              : ''
+          }
+
+
+          <!-- WHO SHOULD WATCH -->
+          ${
+            whoShouldWatch
+              ? `
+                <section class="content-section editorial-section">
+
+                  <div class="section-head">
+                    <h2>Who Should Watch It?</h2>
+                  </div>
+
+                  <div class="editorial-content">
+                    ${paragraphs(whoShouldWatch)}
+                  </div>
+
+                </section>
+              `
+              : ''
+          }
+
+
+          <!-- FINAL VERDICT -->
+          ${
+            reviewVerdict
+              ? `
+                <section class="content-section editorial-section final-verdict-section">
+
+                  <div class="section-head">
+                    <h2>Final Verdict</h2>
+                  </div>
+
+                  <div class="editorial-content">
+                    ${paragraphs(reviewVerdict)}
+                  </div>
+
+                  ${
+                    filmParadiseRating !== null
+                      ? `
+                        <div class="final-rating-badge">
+                          <span>FilmParadise Rating</span>
+                          <strong>
+                            ${esc(filmParadiseRating.toFixed(1))}/10
+                          </strong>
+                        </div>
+                      `
+                      : ''
+                  }
+
+                </section>
+              `
+              : ''
+          }
+
+
+          <!-- TRAILER -->
+          ${
+            m.trailer_url
+              ? `
+                <section class="content-section trailer-section">
+
+                  <div class="section-head">
+                    <h2>Trailer</h2>
+                  </div>
+
+                  <div class="trailer-frame">
+
+                    <iframe
+                      src="${esc(trailerEmbed(m.trailer_url))}"
+                      title="${esc(m.title || 'Movie trailer')}"
+                      loading="lazy"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen>
+                    </iframe>
+
+                  </div>
+
+                </section>
+              `
+              : ''
+          }
+
+
+          <!-- AUDIENCE REVIEWS -->
+          <section class="content-section audience-section">
+
+            <div class="section-head">
+              <h2>Audience Reviews</h2>
+            </div>
+
+            <div class="audience-review-list">
+              ${renderAudienceReviews(reviews)}
+            </div>
+
+            <div class="audience-review-form-wrap">
+
+              <h3>Write a Review</h3>
+
+              <form id="reviewForm" class="review-form">
+
+                <div class="form-grid">
+
+                  <label>
+                    Name
+                    <input
+                      type="text"
+                      name="name"
+                      maxlength="80"
+                      required
+                    >
+                  </label>
+
+                  <label>
+                    Rating
+                    <select name="rating" required>
+                      <option value="">Select</option>
+                      <option value="10">10</option>
+                      <option value="9">9</option>
+                      <option value="8">8</option>
+                      <option value="7">7</option>
+                      <option value="6">6</option>
+                      <option value="5">5</option>
+                      <option value="4">4</option>
+                      <option value="3">3</option>
+                      <option value="2">2</option>
+                      <option value="1">1</option>
+                    </select>
+                  </label>
+
+                </div>
+
+                <label>
+                  Your Review
+                  <textarea
+                    name="body"
+                    rows="5"
+                    maxlength="2000"
+                    required
+                  ></textarea>
+                </label>
+
+                <button type="submit" class="btn">
+                  Submit Review
+                </button>
+
+                <div id="reviewMsg" class="form-msg"></div>
+
+              </form>
 
             </div>
 
-
-            <div class="people">
-
-              <div>
-
-                <b>
-                  Director
-                </b>
-
-                <span>
-                  ${esc(
-                    m.director ||
-                    '—'
-                  )}
-                </span>
-
-              </div>
-
-
-              <div>
-
-                <b>
-                  Cast
-                </b>
-
-                <span>
-                  ${esc(
-                    m.cast ||
-                    '—'
-                  )}
-                </span>
-
-              </div>
-
-
-              <div>
-
-                <b>
-                  Box office
-                </b>
-
-                <span>
-                  ${esc(
-                    m.box_office ||
-                    m.boxOffice ||
-                    '—'
-                  )}
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
+          </section>
 
         </div>
-
-
-        <!-- ================================= -->
-        <!-- MOVIE DETAILS -->
-        <!-- ================================= -->
-
-        <section class="content-section editorial-section">
-
-          <div class="section-head">
-
-            <h2>
-              Movie Details
-            </h2>
-
-          </div>
-
-
-          <div class="movie-detail-list">
-
-            ${
-              m.title
-                ? `
-                  <div>
-                    <b>Title</b>
-                    <span>
-                      ${esc(m.title)}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.type
-                ? `
-                  <div>
-                    <b>Type</b>
-                    <span>
-                      ${esc(m.type)}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.year
-                ? `
-                  <div>
-                    <b>Year</b>
-                    <span>
-                      ${esc(m.year)}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.release_date
-                ? `
-                  <div>
-                    <b>Release Date</b>
-                    <span>
-                      ${esc(
-                        m.release_date
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.language
-                ? `
-                  <div>
-                    <b>Language</b>
-                    <span>
-                      ${esc(
-                        m.language
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.country
-                ? `
-                  <div>
-                    <b>Country</b>
-                    <span>
-                      ${esc(
-                        m.country
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.genre
-                ? `
-                  <div>
-                    <b>Genre</b>
-                    <span>
-                      ${esc(m.genre)}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.quality
-                ? `
-                  <div>
-                    <b>Quality</b>
-                    <span>
-                      ${esc(
-                        m.quality
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.duration
-                ? `
-                  <div>
-                    <b>Duration</b>
-                    <span>
-                      ${esc(
-                        m.duration
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.director
-                ? `
-                  <div>
-                    <b>Director</b>
-                    <span>
-                      ${esc(
-                        m.director
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.cast
-                ? `
-                  <div>
-                    <b>Cast</b>
-                    <span>
-                      ${esc(m.cast)}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-
-            ${
-              m.box_office
-                ? `
-                  <div>
-                    <b>Box Office</b>
-                    <span>
-                      ${esc(
-                        m.box_office
-                      )}
-                    </span>
-                  </div>
-                `
-                : ''
-            }
-
-          </div>
-
-        </section>
-
-
-        <!-- ================================= -->
-        <!-- QUICK SUMMARY -->
-        <!-- ================================= -->
-
-        ${
-          quickSummary
-            ? `
-              <section class="content-section editorial-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    Quick Summary
-                  </h2>
-
-                </div>
-
-
-                <div class="editorial-content">
-
-                  ${paragraphs(
-                    quickSummary
-                  )}
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- FILMPARADISE REVIEW -->
-        <!-- ================================= -->
-
-        ${
-          reviewBody
-            ? `
-              <section class="content-section editorial-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    FilmParadise Review
-                  </h2>
-
-                </div>
-
-
-                <div class="editorial-content">
-
-                  ${paragraphs(
-                    reviewBody
-                  )}
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- WHAT WORKS -->
-        <!-- ================================= -->
-
-        ${
-          reviewPros
-            ? `
-              <section class="content-section editorial-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    What Works
-                  </h2>
-
-                </div>
-
-
-                <div class="editorial-content">
-
-                  ${bulletList(
-                    reviewPros
-                  )}
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- WHAT DOESN'T WORK -->
-        <!-- ================================= -->
-
-        ${
-          reviewCons
-            ? `
-              <section class="content-section editorial-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    What Doesn't Work
-                  </h2>
-
-                </div>
-
-
-                <div class="editorial-content">
-
-                  ${bulletList(
-                    reviewCons
-                  )}
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- WHO SHOULD WATCH -->
-        <!-- ================================= -->
-
-        ${
-          whoShouldWatch
-            ? `
-              <section class="content-section editorial-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    Who Should Watch It?
-                  </h2>
-
-                </div>
-
-
-                <div class="editorial-content">
-
-                  ${paragraphs(
-                    whoShouldWatch
-                  )}
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- FINAL VERDICT -->
-        <!-- ================================= -->
-
-        ${
-          reviewVerdict ||
-          filmParadiseRating
-            ? `
-              <section class="content-section editorial-section verdict-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    Final Verdict
-                  </h2>
-
-                </div>
-
-
-                ${
-                  reviewVerdict
-                    ? `
-                      <div class="editorial-content">
-
-                        ${paragraphs(
-                          reviewVerdict
-                        )}
-
-                      </div>
-                    `
-                    : ''
-                }
-
-
-                ${filmParadiseRating}
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- TRAILER -->
-        <!-- ================================= -->
-
-        ${
-          m.trailer_url
-            ? `
-              <section class="content-section">
-
-                <div class="section-head">
-
-                  <h2>
-                    Trailer
-                  </h2>
-
-                </div>
-
-
-                <div class="trailer-frame">
-
-                  <iframe
-                    src="${esc(
-                      toEmbed(
-                        m.trailer_url
-                      )
-                    )}"
-                    title="${esc(
-                      m.title
-                    )} trailer"
-                    loading="lazy"
-                    allowfullscreen>
-                  </iframe>
-
-                </div>
-
-              </section>
-            `
-            : ''
-        }
-
-
-        <!-- ================================= -->
-        <!-- AUDIENCE REVIEWS -->
-        <!-- ================================= -->
-
-        <section class="content-section">
-
-          <div class="section-head">
-
-            <h2>
-              Audience Reviews
-            </h2>
-
-          </div>
-
-
-          <div class="review-layout">
-
-
-            <div id="reviews">
-
-              ${renderAudienceReviews(
-                data.reviews
-              )}
-
-            </div>
-
-
-            <form
-              class="review-form"
-              id="reviewForm"
-            >
-
-              <h3>
-                Rate this movie
-              </h3>
-
-
-              <!-- Honeypot field -->
-
-              <input
-                type="text"
-                name="website"
-                class="hp"
-                tabindex="-1"
-                autocomplete="off"
-              >
-
-
-              <label>
-
-                Your name
-
-                <input
-                  type="text"
-                  name="author_name"
-                  maxlength="80"
-                  required
-                >
-
-              </label>
-
-
-              <label>
-
-                Rating
-
-                <select name="rating">
-
-                  ${Array.from(
-                    { length: 10 },
-                    (_, i) =>
-                      `<option value="${10 - i}">
-                        ${10 - i}/10
-                      </option>`
-                  ).join('')}
-
-                </select>
-
-              </label>
-
-
-              <label>
-
-                Your review
-
-                <textarea
-                  name="comment"
-                  maxlength="2000"
-                  required
-                  placeholder="What did you think?"
-                ></textarea>
-
-              </label>
-
-
-              <button
-                class="btn btn-primary"
-                type="submit"
-              >
-                Submit review
-              </button>
-
-
-              <div
-                id="reviewMsg"
-                class="form-msg">
-              </div>
-
-            </form>
-
-          </div>
-
-        </section>
-
       `;
 
-
-      /*
-       * Audience review form.
-       */
       const reviewForm =
-        document.getElementById(
-          'reviewForm'
-        );
+        document.getElementById('reviewForm');
 
       if (reviewForm) {
         reviewForm.addEventListener(
@@ -1048,95 +628,80 @@
         );
       }
 
-    } catch (e) {
+      // Update browser title
+      document.title =
+        `${m.title || 'Movie'} — FilmParadise BD`;
 
-      document.getElementById(
-        'detail'
-      ).innerHTML = `
-        <div class="empty">
-          ${esc(
-            e.message ||
-            'Unable to load this title.'
-          )}
+      // Update meta description
+      const metaDescription =
+        document.querySelector(
+          'meta[name="description"]'
+        );
+
+      if (metaDescription) {
+        const description =
+          quickSummary ||
+          `Read the FilmParadise BD review, ratings, trailer and audience reviews for ${m.title || 'this movie'}.`;
+
+        metaDescription.setAttribute(
+          'content',
+          String(description).slice(0, 160)
+        );
+      }
+
+    } catch (error) {
+      detail.innerHTML = `
+        <div class="container">
+          <div class="form-msg err">
+            ${esc(error.message || 'Unable to load movie.')}
+          </div>
         </div>
       `;
-
     }
   }
 
-
-  /*
-   * Submit audience review.
-   */
   async function submitReview(e) {
     e.preventDefault();
 
-    const form =
-      e.currentTarget;
+    const form = e.currentTarget;
+    const msg = document.getElementById('reviewMsg');
 
-    const msg =
-      document.getElementById(
-        'reviewMsg'
-      );
+    msg.textContent = 'Submitting…';
+    msg.className = 'form-msg';
 
-    msg.textContent =
-      'Submitting…';
+    const body = Object.fromEntries(
+      new FormData(form).entries()
+    );
 
-    msg.className =
-      'form-msg';
-
-
-    const body =
-      Object.fromEntries(
-        new FormData(form).entries()
-      );
-
-
-    body.movie_id =
-      movieId;
-
-    body.rating =
-      Number(body.rating);
-
+    body.movie_id = movieId;
+    body.rating = Number(body.rating);
 
     try {
-
-      const result =
-        await apiFetch(
-          '/reviews',
-          {
-            method: 'POST',
-            body: JSON.stringify(body)
-          }
-        );
-
+      const result = await apiFetch(
+        '/reviews',
+        {
+          method: 'POST',
+          body: JSON.stringify(body)
+        }
+      );
 
       msg.textContent =
         result.message ||
-        'Your review has been submitted.';
+        'Review submitted successfully.';
 
-
-      msg.className =
-        'form-msg ok';
-
+      msg.className = 'form-msg ok';
 
       form.reset();
 
-    } catch (e) {
-
+    } catch (error) {
       msg.textContent =
-        e.message ||
-        'Could not submit review.';
+        error.message ||
+        'Unable to submit review.';
 
-      msg.className =
-        'form-msg err';
+      msg.className = 'form-msg err';
     }
   }
 
-
-  /*
-   * Start page.
-   */
   document.addEventListener(
     'DOMContentLoaded',
     load
