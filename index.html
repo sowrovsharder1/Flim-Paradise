@@ -1,12 +1,476 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FilmParadise BD — Movie Reviews, News, Trailers & Recommendations</title><meta name="description" content="FilmParadise BD is a movie discovery community for reviews, recommendations, trailers, box office and entertainment news."><meta property="og:title" content="FilmParadise BD"><meta property="og:description" content="Movie reviews, recommendations, trailers, box office and community ratings."><meta property="og:type" content="website"><link rel="stylesheet" href="/assets/css/style.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></head><body data-page="home">
-<header class="site-header"><div class="container nav-wrap"><a class="brand" href="/"><span>FILM</span>PARADISE <b>BD</b></a><button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button><nav id="nav"><a class="active" href="/">Home</a><a href="/browse.html?article_type=review">Reviews</a><a href="/browse.html?article_type=news">News</a><a href="/browse.html?trailer=1">Trailers</a><a href="/browse.html?article_type=box-office">Box Office</a><a href="/browse.html?article_type=recommendation">Top 10</a><a href="/web-series.html">Series</a></nav><form id="searchForm" class="nav-search"><input name="q" placeholder="Search movies, series..." aria-label="Search"></form></div></header>
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>
+    FilmParadise BD — Movie Reviews, News, Trailers & Recommendations
+  </title>
+
+  <meta
+    name="description"
+    content="FilmParadise BD is a movie discovery community for reviews, recommendations, trailers, box office and entertainment news."
+  >
+
+  <meta
+    property="og:title"
+    content="FilmParadise BD"
+  >
+
+  <meta
+    property="og:description"
+    content="Movie reviews, recommendations, trailers, box office and community ratings."
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/style.css"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+</head>
+
+
+<body data-page="home">
+
+
+<header class="site-header">
+
+  <div class="container nav-wrap">
+
+    <a
+      class="brand"
+      href="/"
+    >
+      <span>FILM</span>PARADISE <b>BD</b>
+    </a>
+
+
+    <button
+      class="menu-btn"
+      id="menuBtn"
+      aria-label="Open menu"
+    >
+      ☰
+    </button>
+
+
+    <nav id="nav">
+
+      <a
+        class="active"
+        href="/"
+      >
+        Home
+      </a>
+
+      <a href="/browse.html?article_type=review">
+        Reviews
+      </a>
+
+      <a href="/browse.html?article_type=news">
+        News
+      </a>
+
+      <a href="/browse.html?trailer=1">
+        Trailers
+      </a>
+
+      <a href="/browse.html?article_type=box-office">
+        Box Office
+      </a>
+
+      <!-- TOP 10 -->
+      <a href="/top-10.html">
+        Top 10
+      </a>
+
+      <a href="/web-series.html">
+        Series
+      </a>
+
+    </nav>
+
+
+    <form
+      id="searchForm"
+      class="nav-search"
+    >
+
+      <input
+        name="q"
+        placeholder="Search movies, series..."
+        aria-label="Search"
+      >
+
+    </form>
+
+  </div>
+
+</header>
+
+
 <main>
-<section class="hero container" id="hero"></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">CURATED FOR YOU</span><h2>Recommended <em>For You</em></h2></div><a href="/browse.html?pinned=1">View all →</a></div><div class="movie-rail" id="recommended" data-loading><div class="loading">Loading recommendations…</div></div></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">EDITORIAL</span><h2>Latest <em>Reviews</em></h2></div><a href="/browse.html?article_type=review">See all →</a></div><div class="article-grid four" id="review-list" data-loading><div class="loading">Loading reviews…</div></div></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">WHAT'S HAPPENING</span><h2>Latest <em>News</em></h2></div><a href="/browse.html?article_type=news">See all →</a></div><div class="article-grid four" id="news-list" data-loading><div class="loading">Loading news…</div></div></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">WATCH & DISCOVER</span><h2>Trailers</h2></div><a href="/browse.html?trailer=1">See all →</a></div><div class="trailer-grid" id="trailers" data-loading><div class="loading">Loading trailers…</div></div></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">THE NUMBERS</span><h2>Box <em>Office</em></h2></div><a href="/browse.html?article_type=box-office">See all →</a></div><div class="box-grid" id="boxoffice" data-loading><div class="loading">Loading box office…</div></div></section>
-<section class="container section"><div class="section-head"><div><span class="eyebrow">BINGE-WORTHY</span><h2>Latest Web <em>Series</em></h2></div><a href="/web-series.html">See all →</a></div><div class="movie-rail" id="series" data-loading><div class="loading">Loading series…</div></div></section>
+
+
+  <!-- HERO -->
+
+  <section
+    class="hero container"
+    id="hero"
+  ></section>
+
+
+  <!-- RECOMMENDED -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          CURATED FOR YOU
+        </span>
+
+        <h2>
+          Recommended <em>For You</em>
+        </h2>
+
+      </div>
+
+      <a href="/browse.html?pinned=1">
+        View all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="movie-rail"
+      id="recommended"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading recommendations…
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- REVIEWS -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          EDITORIAL
+        </span>
+
+        <h2>
+          Latest <em>Reviews</em>
+        </h2>
+
+      </div>
+
+      <a href="/browse.html?article_type=review">
+        See all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="article-grid four"
+      id="review-list"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading reviews…
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- NEWS -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          WHAT'S HAPPENING
+        </span>
+
+        <h2>
+          Latest <em>News</em>
+        </h2>
+
+      </div>
+
+      <a href="/browse.html?article_type=news">
+        See all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="article-grid four"
+      id="news-list"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading news…
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TRAILERS -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          WATCH & DISCOVER
+        </span>
+
+        <h2>
+          Trailers
+        </h2>
+
+      </div>
+
+      <a href="/browse.html?trailer=1">
+        See all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="trailer-grid"
+      id="trailers"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading trailers…
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- BOX OFFICE -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          THE NUMBERS
+        </span>
+
+        <h2>
+          Box <em>Office</em>
+        </h2>
+
+      </div>
+
+      <a href="/browse.html?article_type=box-office">
+        See all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="box-grid"
+      id="boxoffice"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading box office…
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WEB SERIES -->
+
+  <section class="container section">
+
+    <div class="section-head">
+
+      <div>
+
+        <span class="eyebrow">
+          BINGE-WORTHY
+        </span>
+
+        <h2>
+          Latest Web <em>Series</em>
+        </h2>
+
+      </div>
+
+      <a href="/web-series.html">
+        See all →
+      </a>
+
+    </div>
+
+
+    <div
+      class="movie-rail"
+      id="series"
+      data-loading
+    >
+
+      <div class="loading">
+        Loading series…
+      </div>
+
+    </div>
+
+  </section>
+
+
 </main>
-<footer><div class="container footer-grid"><div><div class="brand footer-brand"><span>FILM</span>PARADISE <b>BD</b></div><p>Movie discovery, reviews, recommendations, trailers, box-office updates and community opinions.</p></div><div><strong>Explore</strong><a href="/browse.html?article_type=review">Reviews</a><a href="/browse.html?article_type=recommendation">Recommendations</a><a href="/browse.html?article_type=news">News</a></div><div><strong>Community</strong><a href="/search.html">Search</a><a href="/admin/login.html">Admin</a></div></div><div class="container copyright">© 2026 FilmParadise BD</div></footer><script src="/assets/js/api.js"></script><script src="/assets/js/site.js"></script></body></html>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+  <div class="container footer-grid">
+
+
+    <div>
+
+      <div class="brand footer-brand">
+
+        <span>FILM</span>PARADISE <b>BD</b>
+
+      </div>
+
+
+      <p>
+        Movie discovery, reviews, recommendations, trailers,
+        box-office updates and community opinions.
+      </p>
+
+    </div>
+
+
+    <div>
+
+      <strong>
+        Explore
+      </strong>
+
+      <a href="/browse.html?article_type=review">
+        Reviews
+      </a>
+
+      <!-- TOP 10 -->
+      <a href="/top-10.html">
+        Top 10
+      </a>
+
+      <a href="/browse.html?article_type=news">
+        News
+      </a>
+
+    </div>
+
+
+    <div>
+
+      <strong>
+        Community
+      </strong>
+
+      <a href="/search.html">
+        Search
+      </a>
+
+      <a href="/admin/login.html">
+        Admin
+      </a>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="container copyright">
+
+    © 2026 FilmParadise BD
+
+  </div>
+
+</footer>
+
+
+<script src="/assets/js/api.js"></script>
+
+<script src="/assets/js/site.js"></script>
+
+
+</body>
+
+</html>
