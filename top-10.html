@@ -1,209 +1,527 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-  <title>Top 10 — FilmParadise BD</title>
-  <meta name="description" content="FilmParadise BD Top 10 movie list.">
+  <title>Top 10 Movies | FilmParadise BD</title>
 
-  <link rel="stylesheet" href="/assets/css/style.css">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta
+    name="description"
+    content="FilmParadise BD Top 10 movies."
+  />
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
-  >
+    href="/assets/css/style.css"
+  />
+
+  <style>
+    .top10-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 70px;
+    }
+
+    .top10-heading {
+      margin-bottom: 30px;
+    }
+
+    .top10-heading h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+    }
+
+    .top10-heading p {
+      margin: 0;
+      opacity: 0.75;
+    }
+
+    .top10-grid {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(280px, 1fr)
+      );
+      gap: 22px;
+    }
+
+    .top10-card {
+      display: flex;
+      gap: 18px;
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .top10-rank {
+      font-size: 28px;
+      font-weight: 800;
+      min-width: 42px;
+      line-height: 1;
+    }
+
+    .top10-poster-wrap {
+      width: 120px;
+      min-width: 120px;
+      height: 175px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .top10-poster {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .top10-no-poster {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.5;
+      padding: 10px;
+    }
+
+    .top10-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .top10-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.25;
+      color: #ffd84d;
+    }
+
+    .top10-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .top10-meta span {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      opacity: 0.85;
+    }
+
+    .top10-description {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.82;
+    }
+
+    .top10-empty {
+      padding: 45px 20px;
+      text-align: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      opacity: 0.75;
+    }
+
+    .top10-loading {
+      padding: 30px 0;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 600px) {
+      .top10-page {
+        padding: 28px 14px 50px;
+      }
+
+      .top10-heading h1 {
+        font-size: 28px;
+      }
+
+      .top10-card {
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .top10-rank {
+        min-width: 28px;
+        font-size: 22px;
+      }
+
+      .top10-poster-wrap {
+        width: 95px;
+        min-width: 95px;
+        height: 140px;
+      }
+
+      .top10-title {
+        font-size: 17px;
+      }
+
+      .top10-description {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="site-header">
+  <header class="site-header">
+    <div class="container">
+      <div class="site-header-inner">
 
-  <div class="container nav-wrap">
+        <a
+          href="/"
+          class="brand"
+        >
+          FilmParadise BD
+        </a>
 
-    <a class="brand" href="/">
-      <span>FILM</span>PARADISE <b>BD</b>
-    </a>
+        <nav class="site-nav">
+          <a href="/">Home</a>
+          <a href="/browse.html">Movies</a>
+          <a href="/browse.html?type=series">
+            Web Series
+          </a>
+          <a href="/browse.html?reviews=1">
+            Reviews
+          </a>
+          <a href="/browse.html?trailer=1">
+            Trailers
+          </a>
+          <a href="/browse.html?article_type=news">
+            News
+          </a>
+          <a href="/browse.html?article_type=box-office">
+            Box Office
+          </a>
+          <a
+            href="/top-10.html"
+            class="active"
+          >
+            Top 10
+          </a>
+        </nav>
 
-    <button
-      class="menu-btn"
-      id="menuBtn"
-      aria-label="Open menu"
-    >
-      ☰
-    </button>
+      </div>
+    </div>
+  </header>
 
-    <nav id="nav">
+  <main class="top10-page">
 
-      <a href="/">Home</a>
-
-      <a href="/browse.html?article_type=review">
-        Reviews
-      </a>
-
-      <a href="/browse.html?article_type=news">
-        News
-      </a>
-
-      <a href="/browse.html?trailer=1">
-        Trailers
-      </a>
-
-      <a href="/browse.html?article_type=box-office">
-        Box Office
-      </a>
-
-      <a
-        class="active"
-        href="/top-10.html"
-      >
-        Top 10
-      </a>
-
-      <a href="/web-series.html">
-        Series
-      </a>
-
-    </nav>
-
-    <form
-      id="searchForm"
-      class="nav-search"
-    >
-
-      <input
-        name="q"
-        placeholder="Search movies, series..."
-        aria-label="Search"
-      >
-
-    </form>
-
-  </div>
-
-</header>
-
-
-<main class="container browse-page">
-
-  <div class="eyebrow">
-    RANKED LIST
-  </div>
-
-  <h1>
-    Top 10 Movies
-  </h1>
-
-  <div
-    class="top10-public"
-    id="top10List"
-  >
-
-    <div class="loading">
-      Loading Top 10…
+    <div class="top10-heading">
+      <h1>Top 10 Movies</h1>
+      <p>
+        FilmParadise BD's hand-picked Top 10 movie list.
+      </p>
     </div>
 
-  </div>
+    <div
+      id="top10-loading"
+      class="top10-loading"
+    >
+      Loading Top 10...
+    </div>
 
-</main>
+    <div
+      id="top10-empty"
+      class="top10-empty"
+      style="display: none;"
+    >
+      Top 10 has not been set yet.
+    </div>
 
+    <div
+      id="top10-grid"
+      class="top10-grid"
+    ></div>
 
-<footer>
+  </main>
 
-  <div class="container copyright">
-    © 2026 FilmParadise BD
-  </div>
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        © FilmParadise BD. All rights reserved.
+      </p>
+    </div>
+  </footer>
 
-</footer>
+  <script>
+    document.addEventListener(
+      "DOMContentLoaded",
+      async () => {
 
+        const grid =
+          document.getElementById(
+            "top10-grid"
+          );
 
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/site.js"></script>
+        const loading =
+          document.getElementById(
+            "top10-loading"
+          );
 
+        const empty =
+          document.getElementById(
+            "top10-empty"
+          );
 
-<script>
+        try {
 
-document.addEventListener('DOMContentLoaded', async () => {
+          const response =
+            await fetch(
+              "/api/top10"
+            );
 
-  try {
+          const data =
+            await response.json();
 
-    const d = await fp.apiFetch('/top10');
+          if (
+            !response.ok ||
+            !data.ok
+          ) {
+            throw new Error(
+              data.error ||
+              "Failed to load Top 10."
+            );
+          }
 
-    const list = document.getElementById('top10List');
+          const items =
+            Array.isArray(data.items)
+              ? data.items
+              : [];
 
-    if (!d.top10 || !d.top10.length) {
+          loading.style.display =
+            "none";
 
-      list.innerHTML =
-        '<div class="empty">Top 10 has not been set yet.</div>';
+          if (
+            items.length === 0
+          ) {
+            empty.style.display =
+              "block";
+            return;
+          }
 
-      return;
-    }
+          items
+            .sort(
+              (a, b) =>
+                Number(a.rank) -
+                Number(b.rank)
+            )
+            .forEach(
+              (item) => {
 
-    list.innerHTML = d.top10.map(x => `
+                const card =
+                  document.createElement(
+                    "article"
+                  );
 
-      <a
-        class="top10-public-row"
-        href="/movie.html?slug=${encodeURIComponent(x.slug)}"
-      >
+                card.className =
+                  "top10-card";
 
-        <div class="top10-public-rank">
-          #${x.rank}
-        </div>
+                const rank =
+                  document.createElement(
+                    "div"
+                  );
 
-        <div class="top10-public-poster">
+                rank.className =
+                  "top10-rank";
 
-          <img
-            src="${fp.esc(x.poster_url || '')}"
-            alt="${fp.esc(x.title || '')}"
-          >
+                rank.textContent =
+                  `#${item.rank}`;
 
-        </div>
+                const posterWrap =
+                  document.createElement(
+                    "div"
+                  );
 
-        <div class="top10-public-info">
+                posterWrap.className =
+                  "top10-poster-wrap";
 
-          <h2>
-            ${fp.esc(x.title)}
-          </h2>
+                if (
+                  item.poster_url
+                ) {
 
-          <div class="card-meta">
+                  const img =
+                    document.createElement(
+                      "img"
+                    );
 
-            ${fp.esc(x.year || '')}
+                  img.className =
+                    "top10-poster";
 
-            ${x.language
-              ? ` · ${fp.esc(x.language)}`
-              : ''
-            }
+                  img.src =
+                    item.poster_url;
 
-            ${x.imdb_rating
-              ? ` · IMDb ${fp.esc(x.imdb_rating)}`
-              : ''
-            }
+                  img.alt =
+                    `${item.title || "Movie"} poster`;
 
-          </div>
+                  img.loading =
+                    "lazy";
 
-          <p>
-            ${fp.esc(x.note || '')}
-          </p>
+                  posterWrap.appendChild(
+                    img
+                  );
 
-        </div>
+                } else {
 
-      </a>
+                  const noPoster =
+                    document.createElement(
+                      "div"
+                    );
 
-    `).join('');
+                  noPoster.className =
+                    "top10-no-poster";
 
-  } catch (e) {
+                  noPoster.textContent =
+                    "No poster";
 
-    document.getElementById('top10List').innerHTML =
-      `<div class="empty">${fp.esc(e.message)}</div>`;
+                  posterWrap.appendChild(
+                    noPoster
+                  );
+                }
 
-  }
+                const info =
+                  document.createElement(
+                    "div"
+                  );
 
-});
+                info.className =
+                  "top10-info";
 
-</script>
+                const title =
+                  document.createElement(
+                    "h2"
+                  );
+
+                title.className =
+                  "top10-title";
+
+                title.textContent =
+                  item.title || "";
+
+                const meta =
+                  document.createElement(
+                    "div"
+                  );
+
+                meta.className =
+                  "top10-meta";
+
+                if (
+                  item.release_year
+                ) {
+
+                  const year =
+                    document.createElement(
+                      "span"
+                    );
+
+                  year.textContent =
+                    item.release_year;
+
+                  meta.appendChild(
+                    year
+                  );
+                }
+
+                if (
+                  item.language
+                ) {
+
+                  const language =
+                    document.createElement(
+                      "span"
+                    );
+
+                  language.textContent =
+                    item.language;
+
+                  meta.appendChild(
+                    language
+                  );
+                }
+
+                const description =
+                  document.createElement(
+                    "p"
+                  );
+
+                description.className =
+                  "top10-description";
+
+                description.textContent =
+                  item.short_description ||
+                  "";
+
+                info.appendChild(
+                  title
+                );
+
+                if (
+                  meta.children.length
+                ) {
+                  info.appendChild(
+                    meta
+                  );
+                }
+
+                if (
+                  item.short_description
+                ) {
+                  info.appendChild(
+                    description
+                  );
+                }
+
+                card.appendChild(
+                  rank
+                );
+
+                card.appendChild(
+                  posterWrap
+                );
+
+                card.appendChild(
+                  info
+                );
+
+                grid.appendChild(
+                  card
+                );
+              }
+            );
+
+        } catch (error) {
+
+          console.error(error);
+
+          loading.style.display =
+            "none";
+
+          empty.style.display =
+            "block";
+
+          empty.textContent =
+            "Unable to load Top 10 right now.";
+        }
+      }
+    );
+  </script>
 
 </body>
 </html>
