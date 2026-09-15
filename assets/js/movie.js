@@ -1,18 +1,7 @@
 (function () {
-  const { apiFetch, esc } = window.fp;
+  const { apiFetch, esc, formatDate } = window.fp;
 
-  let editingSlug = null;
-  let categories = [];
-
-  const form = document.getElementById('form');
-  const msg = document.getElementById('msg');
-  const heading = document.getElementById('heading');
-  const deleteBtn = document.getElementById('deleteBtn');
-
-  const posterFile = document.getElementById('posterFile');
-  const posterUrl = document.getElementById('posterUrl');
-  const preview = document.getElementById('preview');
-  const uploadMsg = document.getElementById('uploadMsg');
+  let movieId = null;
 
   const placeholder =
     'data:image/svg+xml;charset=UTF-8,' +
@@ -30,184 +19,154 @@
       </svg>
     `);
 
-  function setMsg(text, type = '') {
-    msg.textContent = text;
-    msg.className = 'form-msg' + (type ? ' ' + type : '');
+  function stars(rating) {
+    const n = Math.round(Number(rating) || 0);
+
+    return Array.from(
+      { length: 10 },
+      (_, i) =>
+        `<span class="star ${i < n ? 'on' : ''}">★</span>`
+    ).join('');
   }
 
-  function setPreview(url) {
-    preview.innerHTML = '';
+  function toEmbed(url) {
+    try {
+      const x = new URL(url);
 
-    if (!url) return;
+      if (x.hostname.includes('youtube.com')) {
+        const id =
+          x.searchParams.get('v') ||
+          x.pathname.split('/').pop();
 
-    const img = document.createElement('img');
-    img.src = url;
-    img.alt = 'Poster preview';
+        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+      }
 
-    img.onerror = function () {
-      img.src = placeholder;
-    };
+      if (x.hostname === 'youtu.be') {
+        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(
+          x.pathname.slice(1)
+        )}`;
+      }
 
-    preview.appendChild(img);
-  }
-
-  function slugify(text) {
-    return String(text || '')
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  }
-
-  function renderCategories(selectedIds = []) {
-    const box = document.getElementById('cats');
-
-    if (!categories.length) {
-      box.innerHTML = '<span class="empty">No categories found.</span>';
-      return;
+      return url;
+    } catch {
+      return '';
     }
+  }
 
-    const selected = new Set(
-      (selectedIds || []).map(Number)
-    );
+  function section(title, content, className = '') {
+    if (!content || !String(content).trim()) return '';
 
-    box.innerHTML = categories
-      .map(c => {
-        const checked = selected.has(Number(c.id))
-          ? 'checked'
-          : '';
+    return `
+      <section class="content-section editorial-section ${className}">
+        <div class="section-head">
+          <h2>${esc(title)}</h2>
+        </div>
+        <div class="editorial-content">
+          ${content}
+        </div>
+      </section>
+    `;
+  }
 
-        return `
-          <label class="chip">
-            <input
-              type="checkbox"
-              name="category_ids"
-              value="${Number(c.id)}"
-              ${checked}
-            >
-            <span>${esc(c.name)}</span>
-          </label>
-        `;
-      })
+  function paragraphs(text) {
+    if (!text || !String(text).trim()) return '';
+
+    return String(text)
+      .trim()
+      .split(/\n\s*\n/)
+      .map(p => `<p>${esc(p.trim())}</p>`)
       .join('');
   }
 
-  async function loadCategories() {
-    try {
-      const data = await apiFetch('/categories');
+  function bulletList(text) {
+    if (!text || !String(text).trim()) return '';
 
-      categories =
-        Array.isArray(data)
-          ? data
-          : (data.categories || []);
+    const items = String(text)
+      .split(/\n/)
+      .map(x => x.trim())
+      .filter(Boolean);
 
-      renderCategories([]);
-    } catch (e) {
-      document.getElementById('cats').innerHTML =
-        `<span class="empty">${esc(e.message)}</span>`;
-    }
+    if (!items.length) return '';
+
+    return `
+      <ul class="editorial-list">
+        ${items
+          .map(item => `<li>${esc(item.replace(/^[-•*]\s*/, ''))}</li>`)
+          .join('')}
+      </ul>
+    `;
   }
 
-  function fillForm(m) {
-    const fields = [
-      'title',
-      'slug',
-      'year',
-      'language',
-      'country',
-      'genre',
-      'quality',
-      'duration',
-      'release_date',
-      'director',
-      'cast',
-      'trailer_url',
-      'box_office',
-      'quick_summary',
-      'review_body',
-      'review_pros',
-      'review_cons',
-      'who_should_watch',
-      'review_verdict',
-      'review_rating',
-      'status'
-    ];
-
-    fields.forEach(name => {
-      const el = form.elements[name];
-      if (!el) return;
-
-      let value = m[name];
-
-      if (value === null || value === undefined) {
-        value = '';
-      }
-
-      el.value = value;
-    });
-
-    /*
-     * Type
-     */
-    if (form.elements.type) {
-      form.elements.type.value =
-        m.type || 'movie';
+  function renderRating(rating) {
+    if (
+      rating === null ||
+      rating === undefined ||
+      rating === '' ||
+      Number.isNaN(Number(rating))
+    ) {
+      return '';
     }
 
-    /*
-     * IMDb rating
-     */
-    if (form.elements.imdb_rating) {
-      form.elements.imdb_rating.value =
-        m.imdb_rating ?? '';
-    }
+    const value = Number(rating).toFixed(1);
 
-    /*
-     * Poster
-     */
-    posterUrl.value = m.poster_url || '';
-    setPreview(m.poster_url || '');
-
-    /*
-     * Placement checkboxes
-     */
-    form.elements.show_home.checked =
-      Number(m.show_home) === 1;
-
-    form.elements.show_review.checked =
-      Number(m.show_review) === 1;
-
-    form.elements.show_trailer.checked =
-      Number(m.show_trailer) === 1;
-
-    form.elements.is_recommended.checked =
-      Number(m.is_recommended) === 1;
-
-    /*
-     * Featured
-     *
-     * Keep compatibility with the existing
-     * movies.is_featured column.
-     */
-    form.elements.is_featured.checked =
-      Number(m.is_featured) === 1;
-
-    /*
-     * Categories
-     */
-    const categoryIds =
-      Array.isArray(m.categories)
-        ? m.categories.map(c =>
-            typeof c === 'object'
-              ? c.id
-              : c
-          )
-        : [];
-
-    renderCategories(categoryIds);
+    return `
+      <div class="filmparadise-rating">
+        <div class="fp-rating-number">${esc(value)}</div>
+        <div class="fp-rating-info">
+          <div class="fp-rating-stars">
+            ${stars(Number(rating))}
+          </div>
+          <strong>FilmParadise Rating</strong>
+          <span>Our editorial rating</span>
+        </div>
+      </div>
+    `;
   }
 
-  async function loadMovie(slug) {
+  function renderAudienceReviews(reviews) {
+    if (!Array.isArray(reviews) || !reviews.length) {
+      return `
+        <div class="empty">
+          No approved audience reviews yet. Be the first.
+        </div>
+      `;
+    }
+
+    return reviews
+      .map(
+        r => `
+          <article class="review">
+            <div class="review-top">
+              <strong>${esc(r.author_name || 'Anonymous')}</strong>
+              <span class="score">${esc(r.rating)}/10</span>
+            </div>
+
+            <div class="stars-row">
+              ${stars(r.rating)}
+            </div>
+
+            <p>${esc(r.comment || '')}</p>
+
+            <time>${formatDate(r.created_at)}</time>
+          </article>
+        `
+      )
+      .join('');
+  }
+
+  async function load() {
+    const slug =
+      new URLSearchParams(location.search).get('slug');
+
+    if (!slug) {
+      document.getElementById('detail').innerHTML = `
+        <div class="empty">
+          Movie not found.
+        </div>
+      `;
+      return;
+    }
+
     try {
       const data =
         await apiFetch(
@@ -219,389 +178,629 @@
         throw new Error('Movie not found.');
       }
 
-      editingSlug = slug;
+      const m = data.movie;
 
-      heading.textContent = 'Edit Title';
-      deleteBtn.style.display = 'inline-flex';
+      movieId = m.id;
 
-      fillForm(data.movie);
-    } catch (e) {
-      setMsg(e.message, 'err');
-    }
-  }
-
-  async function uploadPoster(file) {
-    if (!file) return null;
-
-    uploadMsg.textContent = 'Uploading poster…';
-
-    try {
-      const body = new FormData();
-      body.append('file', file);
+      document.title =
+        `${m.title} — FilmParadise BD`;
 
       /*
-       * Existing poster upload endpoint.
+       * Basic information
        */
-      const result =
-        await apiFetch('/upload', {
-          method: 'POST',
-          body
-        });
+      const facts = [
+        m.genre,
+        m.language,
+        m.country,
+        m.duration,
+        m.quality
+      ]
+        .filter(Boolean)
+        .map(x => `<span>${esc(x)}</span>`)
+        .join('');
 
-      const url =
-        result.url ||
-        result.poster_url ||
-        result.path;
+      /*
+       * Quick Summary
+       *
+       * New field first.
+       * Old synopsis is used as fallback
+       * for older movies.
+       */
+      const quickSummary =
+        m.quick_summary ||
+        m.synopsis ||
+        '';
 
-      if (!url) {
-        throw new Error(
-          'Poster upload did not return an image URL.'
+      /*
+       * Editorial review fields
+       */
+      const reviewBody =
+        m.review_body || '';
+
+      const reviewPros =
+        m.review_pros || '';
+
+      const reviewCons =
+        m.review_cons || '';
+
+      const whoShouldWatch =
+        m.who_should_watch || '';
+
+      const reviewVerdict =
+        m.review_verdict || '';
+
+      /*
+       * FilmParadise rating
+       */
+      const filmParadiseRating =
+        renderRating(m.review_rating);
+
+      /*
+       * Audience rating
+       */
+      const audienceRating =
+        m.audience_rating !== null &&
+        m.audience_rating !== undefined
+          ? Number(m.audience_rating).toFixed(1)
+          : '0.0';
+
+      /*
+       * Main movie header
+       */
+      document.getElementById('detail').innerHTML = `
+
+        <div class="detail-grid">
+
+          <div class="detail-poster">
+            <img
+              src="${esc(m.poster_url || placeholder)}"
+              onerror="this.src='${placeholder}'"
+              alt="${esc(m.title)} poster"
+            >
+          </div>
+
+          <div>
+
+            <div class="eyebrow">
+              ${esc(m.type || 'Movie')}
+              ${m.year ? ` · ${esc(m.year)}` : ''}
+            </div>
+
+            <h1 class="detail-title">
+              ${esc(m.title)}
+            </h1>
+
+            ${
+              facts
+                ? `<div class="facts">${facts}</div>`
+                : ''
+            }
+
+            <div class="rating-line">
+
+              <div>
+                <strong>
+                  ${m.imdb_rating ?? '—'}
+                </strong>
+                <small>IMDb</small>
+              </div>
+
+              <div>
+                <strong>
+                  ${esc(audienceRating)}
+                </strong>
+                <small>
+                  Audience (${m.review_count || 0})
+                </small>
+              </div>
+
+            </div>
+
+            ${
+              quickSummary
+                ? `
+                  <div class="detail-summary">
+                    <strong>Quick Summary</strong>
+                    ${paragraphs(quickSummary)}
+                  </div>
+                `
+                : ''
+            }
+
+            <div class="people">
+
+              <div>
+                <b>Director</b>
+                <span>
+                  ${esc(m.director || '—')}
+                </span>
+              </div>
+
+              <div>
+                <b>Cast</b>
+                <span>
+                  ${esc(m.cast || '—')}
+                </span>
+              </div>
+
+              <div>
+                <b>Box office</b>
+                <span>
+                  ${esc(
+                    m.box_office ||
+                    m.boxOffice ||
+                    '—'
+                  )}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- QUICK SUMMARY -->
+
+        ${
+          quickSummary
+            ? `
+              <section class="content-section editorial-section">
+                <div class="section-head">
+                  <h2>Quick Summary</h2>
+                </div>
+
+                <div class="editorial-content">
+                  ${paragraphs(quickSummary)}
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- FILMPARADISE REVIEW -->
+
+        ${
+          reviewBody
+            ? `
+              <section class="content-section editorial-section">
+                <div class="section-head">
+                  <h2>FilmParadise Review</h2>
+                </div>
+
+                <div class="editorial-content">
+                  ${paragraphs(reviewBody)}
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- WHAT WORKS -->
+
+        ${
+          reviewPros
+            ? `
+              <section class="content-section editorial-section">
+                <div class="section-head">
+                  <h2>What Works</h2>
+                </div>
+
+                <div class="editorial-content">
+                  ${bulletList(reviewPros)}
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- WHAT DOESN'T WORK -->
+
+        ${
+          reviewCons
+            ? `
+              <section class="content-section editorial-section">
+                <div class="section-head">
+                  <h2>What Doesn't Work</h2>
+                </div>
+
+                <div class="editorial-content">
+                  ${bulletList(reviewCons)}
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- WHO SHOULD WATCH -->
+
+        ${
+          whoShouldWatch
+            ? `
+              <section class="content-section editorial-section">
+                <div class="section-head">
+                  <h2>Who Should Watch It?</h2>
+                </div>
+
+                <div class="editorial-content">
+                  ${paragraphs(whoShouldWatch)}
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- FINAL VERDICT -->
+
+        ${
+          reviewVerdict || filmParadiseRating
+            ? `
+              <section class="content-section editorial-section verdict-section">
+
+                <div class="section-head">
+                  <h2>Final Verdict</h2>
+                </div>
+
+                ${
+                  reviewVerdict
+                    ? `
+                      <div class="editorial-content">
+                        ${paragraphs(reviewVerdict)}
+                      </div>
+                    `
+                    : ''
+                }
+
+                ${filmParadiseRating}
+
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- TRAILER -->
+
+        ${
+          m.trailer_url
+            ? `
+              <section class="content-section">
+                <div class="section-head">
+                  <h2>Trailer</h2>
+                </div>
+
+                <div class="trailer-frame">
+                  <iframe
+                    src="${esc(toEmbed(m.trailer_url))}"
+                    title="${esc(m.title)} trailer"
+                    loading="lazy"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </section>
+            `
+            : ''
+        }
+
+
+        <!-- MOVIE DETAILS -->
+
+        <section class="content-section editorial-section">
+
+          <div class="section-head">
+            <h2>Movie Details</h2>
+          </div>
+
+          <div class="movie-detail-list">
+
+            ${
+              m.title
+                ? `
+                  <div>
+                    <b>Title</b>
+                    <span>${esc(m.title)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.type
+                ? `
+                  <div>
+                    <b>Type</b>
+                    <span>${esc(m.type)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.year
+                ? `
+                  <div>
+                    <b>Year</b>
+                    <span>${esc(m.year)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.release_date
+                ? `
+                  <div>
+                    <b>Release Date</b>
+                    <span>${esc(m.release_date)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.language
+                ? `
+                  <div>
+                    <b>Language</b>
+                    <span>${esc(m.language)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.country
+                ? `
+                  <div>
+                    <b>Country</b>
+                    <span>${esc(m.country)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.genre
+                ? `
+                  <div>
+                    <b>Genre</b>
+                    <span>${esc(m.genre)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.quality
+                ? `
+                  <div>
+                    <b>Quality</b>
+                    <span>${esc(m.quality)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.duration
+                ? `
+                  <div>
+                    <b>Duration</b>
+                    <span>${esc(m.duration)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.director
+                ? `
+                  <div>
+                    <b>Director</b>
+                    <span>${esc(m.director)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.cast
+                ? `
+                  <div>
+                    <b>Cast</b>
+                    <span>${esc(m.cast)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+            ${
+              m.box_office
+                ? `
+                  <div>
+                    <b>Box Office</b>
+                    <span>${esc(m.box_office)}</span>
+                  </div>
+                `
+                : ''
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- AUDIENCE REVIEWS -->
+
+        <section class="content-section">
+
+          <div class="section-head">
+            <h2>Audience Reviews</h2>
+          </div>
+
+          <div class="review-layout">
+
+            <div id="reviews">
+              ${renderAudienceReviews(data.reviews)}
+            </div>
+
+
+            <form
+              class="review-form"
+              id="reviewForm"
+            >
+
+              <h3>Rate this movie</h3>
+
+              <input
+                type="text"
+                name="website"
+                class="hp"
+                tabindex="-1"
+                autocomplete="off"
+              >
+
+              <label>
+                Your name
+                <input
+                  name="author_name"
+                  maxlength="80"
+                  required
+                >
+              </label>
+
+              <label>
+                Rating
+
+                <select name="rating">
+
+                  ${Array.from(
+                    { length: 10 },
+                    (_, i) =>
+                      `<option value="${10 - i}">
+                        ${10 - i}/10
+                      </option>`
+                  ).join('')}
+
+                </select>
+
+              </label>
+
+              <label>
+                Your review
+
+                <textarea
+                  name="comment"
+                  maxlength="2000"
+                  required
+                  placeholder="What did you think?"
+                ></textarea>
+
+              </label>
+
+              <button
+                class="btn btn-primary"
+                type="submit"
+              >
+                Submit review
+              </button>
+
+              <div
+                id="reviewMsg"
+                class="form-msg">
+              </div>
+
+            </form>
+
+          </div>
+
+        </section>
+
+      `;
+
+      const reviewForm =
+        document.getElementById('reviewForm');
+
+      if (reviewForm) {
+        reviewForm.addEventListener(
+          'submit',
+          submitReview
         );
       }
 
-      uploadMsg.textContent =
-        'Poster uploaded successfully.';
-
-      return url;
     } catch (e) {
-      uploadMsg.textContent =
-        e.message || 'Poster upload failed.';
 
-      throw e;
+      document.getElementById('detail').innerHTML = `
+        <div class="empty">
+          ${esc(
+            e.message ||
+            'Unable to load this title.'
+          )}
+        </div>
+      `;
+
     }
   }
 
-  async function saveMovie(e) {
+  async function submitReview(e) {
     e.preventDefault();
 
-    const button =
-      document.getElementById('save');
+    const form = e.currentTarget;
 
-    button.disabled = true;
-    setMsg(
-      editingSlug
-        ? 'Updating title…'
-        : 'Saving title…'
-    );
+    const msg =
+      document.getElementById('reviewMsg');
+
+    msg.textContent = 'Submitting…';
+    msg.className = 'form-msg';
+
+    const body =
+      Object.fromEntries(
+        new FormData(form).entries()
+      );
+
+    body.movie_id = movieId;
+    body.rating = Number(body.rating);
 
     try {
-      /*
-       * Upload poster first if a new file
-       * has been selected.
-       */
-      let uploadedPoster = null;
 
-      if (posterFile.files && posterFile.files[0]) {
-        uploadedPoster =
-          await uploadPoster(
-            posterFile.files[0]
-          );
-      }
-
-      const fd = new FormData(form);
-
-      /*
-       * Convert FormData to normal object.
-       */
-      const body =
-        Object.fromEntries(fd.entries());
-
-      /*
-       * Generate slug if empty.
-       */
-      if (!body.slug && body.title) {
-        body.slug = slugify(body.title);
-      }
-
-      /*
-       * Poster.
-       */
-      if (uploadedPoster) {
-        body.poster_url = uploadedPoster;
-      }
-
-      body.year =
-        body.year
-          ? Number(body.year)
-          : null;
-
-      body.imdb_rating =
-        body.imdb_rating
-          ? Number(body.imdb_rating)
-          : null;
-
-      body.review_rating =
-        body.review_rating
-          ? Number(body.review_rating)
-          : null;
-
-      /*
-       * Checkbox values.
-       */
-      body.show_home =
-        form.elements.show_home.checked
-          ? 1
-          : 0;
-
-      body.show_review =
-        form.elements.show_review.checked
-          ? 1
-          : 0;
-
-      body.show_trailer =
-        form.elements.show_trailer.checked
-          ? 1
-          : 0;
-
-      body.is_recommended =
-        form.elements.is_recommended.checked
-          ? 1
-          : 0;
-
-      body.is_featured =
-        form.elements.is_featured.checked
-          ? 1
-          : 0;
-
-      /*
-       * Categories.
-       */
-      body.category_ids =
-        Array.from(
-          form.querySelectorAll(
-            'input[name="category_ids"]:checked'
-          )
-        ).map(input =>
-          Number(input.value)
+      const result =
+        await apiFetch(
+          '/reviews',
+          {
+            method: 'POST',
+            body: JSON.stringify(body)
+          }
         );
 
-      /*
-       * Don't send the checkbox
-       * helper field as a string.
-       */
-      delete body.category_ids_unused;
+      msg.textContent =
+        result.message ||
+        'Your review has been submitted.';
 
-      /*
-       * Remove file input from JSON body.
-       */
-      delete body.posterFile;
+      msg.className =
+        'form-msg ok';
 
-      /*
-       * Save.
-       */
-      let result;
-
-      if (editingSlug) {
-        result =
-          await apiFetch(
-            '/movies/' +
-            encodeURIComponent(editingSlug),
-            {
-              method: 'PUT',
-              body: JSON.stringify(body)
-            }
-          );
-      } else {
-        result =
-          await apiFetch(
-            '/movies',
-            {
-              method: 'POST',
-              body: JSON.stringify(body)
-            }
-          );
-      }
-
-      /*
-       * If API returns a new slug,
-       * keep it for future edits.
-       */
-      if (result && result.movie) {
-        editingSlug =
-          result.movie.slug ||
-          body.slug ||
-          editingSlug;
-      }
-
-      setMsg(
-        editingSlug
-          ? 'Title saved successfully.'
-          : 'Title created successfully.',
-        'ok'
-      );
-
-      /*
-       * If this was a new title,
-       * change the page into edit mode.
-       */
-      if (!deleteBtn.style.display ||
-          deleteBtn.style.display === 'none') {
-
-        deleteBtn.style.display =
-          'inline-flex';
-
-        heading.textContent =
-          'Edit Title';
-      }
-
-      /*
-       * Update URL without reloading.
-       */
-      if (editingSlug) {
-        const newUrl =
-          '/admin/movie-form.html?slug=' +
-          encodeURIComponent(editingSlug);
-
-        history.replaceState(
-          {},
-          '',
-          newUrl
-        );
-      }
+      form.reset();
 
     } catch (e) {
-      setMsg(
+
+      msg.textContent =
         e.message ||
-        'Could not save title.',
-        'err'
-      );
-    } finally {
-      button.disabled = false;
+        'Could not submit review.';
+
+      msg.className =
+        'form-msg err';
     }
   }
 
-  async function deleteMovie() {
-    if (!editingSlug) return;
-
-    const ok =
-      confirm(
-        'Are you sure you want to delete this title?'
-      );
-
-    if (!ok) return;
-
-    deleteBtn.disabled = true;
-    setMsg('Deleting title…');
-
-    try {
-      await apiFetch(
-        '/movies/' +
-        encodeURIComponent(editingSlug),
-        {
-          method: 'DELETE'
-        }
-      );
-
-      setMsg(
-        'Title deleted successfully.',
-        'ok'
-      );
-
-      setTimeout(() => {
-        location.href =
-          '/admin/movies.html';
-      }, 700);
-
-    } catch (e) {
-      deleteBtn.disabled = false;
-
-      setMsg(
-        e.message ||
-        'Could not delete title.',
-        'err'
-      );
-    }
-  }
-
-  /*
-   * Auto-generate slug from title
-   * only when creating a new title.
-   */
-  const titleInput =
-    document.getElementById('title');
-
-  const slugInput =
-    document.getElementById('slug');
-
-  titleInput.addEventListener(
-    'input',
-    function () {
-      if (!editingSlug &&
-          !slugInput.value.trim()) {
-        slugInput.value =
-          slugify(titleInput.value);
-      }
-    }
-  );
-
-  /*
-   * Poster URL preview.
-   */
-  posterUrl.addEventListener(
-    'input',
-    function () {
-      setPreview(
-        posterUrl.value.trim()
-      );
-    }
-  );
-
-  /*
-   * Local poster preview.
-   */
-  posterFile.addEventListener(
-    'change',
-    function () {
-      const file =
-        posterFile.files &&
-        posterFile.files[0];
-
-      if (!file) return;
-
-      const url =
-        URL.createObjectURL(file);
-
-      setPreview(url);
-      uploadMsg.textContent =
-        'Poster selected. It will upload when you save.';
-    }
-  );
-
-  /*
-   * Submit.
-   */
-  form.addEventListener(
-    'submit',
-    saveMovie
-  );
-
-  /*
-   * Delete.
-   */
-  deleteBtn.addEventListener(
-    'click',
-    deleteMovie
-  );
-
-  /*
-   * Initial load.
-   */
   document.addEventListener(
     'DOMContentLoaded',
-    async function () {
-      await loadCategories();
-
-      const params =
-        new URLSearchParams(
-          location.search
-        );
-
-      const slug =
-        params.get('slug');
-
-      if (slug) {
-        await loadMovie(slug);
-      }
-    }
+    load
   );
+
 })();
