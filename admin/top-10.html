@@ -107,9 +107,21 @@
         </h1>
 
         <p class="admin-subtitle">
-          Create and manage the 10 movies shown in the
-          FilmParadise BD Top 10 section.
+          Create and manage separate Top 10 movie lists
+          for the FilmParadise BD website.
         </p>
+
+      </div>
+
+
+      <div>
+
+        <a
+          href="/admin/top-10-edit.html"
+          class="btn btn-primary"
+        >
+          + Add New Top 10
+        </a>
 
       </div>
 
@@ -123,13 +135,13 @@
       <div class="panel">
 
         <h2>
-          Top 10 Movies
+          Top 10 Lists
         </h2>
 
         <p>
-          Add a separate movie entry for each ranking.
-          These Top 10 entries are independent from the
-          Movies & Series database.
+          Each Top 10 list is a separate post. For example:
+          Top 10 Horror Movies You Should Watch, Top 10 Action
+          Movies, Top 10 Hollywood Movies, or Top 10 Bollywood Movies.
         </p>
 
       </div>
@@ -137,1209 +149,124 @@
     </section>
 
 
-    <!-- TOP 10 FORM -->
+    <!-- POSTS -->
 
-    <form
-      id="top10-form"
-      enctype="multipart/form-data"
-    >
+    <section class="section">
 
+      <div class="panel">
 
-      <!-- RANK 1 -->
-
-      <section class="section">
 
         <div class="section-head">
 
           <div>
 
             <span class="eyebrow">
-              RANK 01
+              MANAGE CONTENT
             </span>
 
             <h2>
-              #1 Movie
+              Published & Draft Lists
             </h2>
 
           </div>
 
         </div>
 
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-1">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-1"
-              name="top10-title-1"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-1">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-1"
-              name="top10-year-1"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-1">
-              Language
-            </label>
-
-            <input
-              id="top10-language-1"
-              name="top10-language-1"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-1">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-1"
-              name="top10-description-1"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-1">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-1"
-              name="top10-poster-1"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 2 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 02
-            </span>
-
-            <h2>
-              #2 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-2">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-2"
-              name="top10-title-2"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-2">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-2"
-              name="top10-year-2"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-2">
-              Language
-            </label>
-
-            <input
-              id="top10-language-2"
-              name="top10-language-2"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-2">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-2"
-              name="top10-description-2"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-2">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-2"
-              name="top10-poster-2"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 3 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 03
-            </span>
-
-            <h2>
-              #3 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-3">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-3"
-              name="top10-title-3"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-3">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-3"
-              name="top10-year-3"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-3">
-              Language
-            </label>
-
-            <input
-              id="top10-language-3"
-              name="top10-language-3"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-3">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-3"
-              name="top10-description-3"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-3">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-3"
-              name="top10-poster-3"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 4 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 04
-            </span>
-
-            <h2>
-              #4 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-4">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-4"
-              name="top10-title-4"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-4">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-4"
-              name="top10-year-4"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-4">
-              Language
-            </label>
-
-            <input
-              id="top10-language-4"
-              name="top10-language-4"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-4">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-4"
-              name="top10-description-4"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-4">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-4"
-              name="top10-poster-4"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 5 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 05
-            </span>
-
-            <h2>
-              #5 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-5">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-5"
-              name="top10-title-5"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-5">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-5"
-              name="top10-year-5"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-5">
-              Language
-            </label>
-
-            <input
-              id="top10-language-5"
-              name="top10-language-5"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-5">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-5"
-              name="top10-description-5"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-5">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-5"
-              name="top10-poster-5"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 6 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 06
-            </span>
-
-            <h2>
-              #6 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-6">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-6"
-              name="top10-title-6"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-6">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-6"
-              name="top10-year-6"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-6">
-              Language
-            </label>
-
-            <input
-              id="top10-language-6"
-              name="top10-language-6"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-6">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-6"
-              name="top10-description-6"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-6">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-6"
-              name="top10-poster-6"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 7 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 07
-            </span>
-
-            <h2>
-              #7 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-7">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-7"
-              name="top10-title-7"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-7">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-7"
-              name="top10-year-7"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-7">
-              Language
-            </label>
-
-            <input
-              id="top10-language-7"
-              name="top10-language-7"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-7">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-7"
-              name="top10-description-7"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-7">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-7"
-              name="top10-poster-7"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 8 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 08
-            </span>
-
-            <h2>
-              #8 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-8">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-8"
-              name="top10-title-8"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-8">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-8"
-              name="top10-year-8"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-8">
-              Language
-            </label>
-
-            <input
-              id="top10-language-8"
-              name="top10-language-8"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-8">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-8"
-              name="top10-description-8"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-8">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-8"
-              name="top10-poster-8"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 9 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 09
-            </span>
-
-            <h2>
-              #9 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-9">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-9"
-              name="top10-title-9"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-9">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-9"
-              name="top10-year-9"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-9">
-              Language
-            </label>
-
-            <input
-              id="top10-language-9"
-              name="top10-language-9"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-9">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-9"
-              name="top10-description-9"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-9">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-9"
-              name="top10-poster-9"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- RANK 10 -->
-
-      <section class="section">
-
-        <div class="section-head">
-
-          <div>
-
-            <span class="eyebrow">
-              RANK 10
-            </span>
-
-            <h2>
-              #10 Movie
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-
-          <div class="field">
-
-            <label for="top10-title-10">
-              Movie Title
-            </label>
-
-            <input
-              id="top10-title-10"
-              name="top10-title-10"
-              type="text"
-              placeholder="Enter movie title"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-year-10">
-              Release Year
-            </label>
-
-            <input
-              id="top10-year-10"
-              name="top10-year-10"
-              type="number"
-              min="1900"
-              max="2100"
-              placeholder="2026"
-            >
-
-          </div>
-
-
-          <div class="field">
-
-            <label for="top10-language-10">
-              Language
-            </label>
-
-            <input
-              id="top10-language-10"
-              name="top10-language-10"
-              type="text"
-              placeholder="English"
-            >
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-description-10">
-              Short Description
-            </label>
-
-            <textarea
-              id="top10-description-10"
-              name="top10-description-10"
-              rows="4"
-              placeholder="Write a short description about this movie..."
-            ></textarea>
-
-          </div>
-
-
-          <div class="field field-full">
-
-            <label for="top10-poster-10">
-              Poster
-            </label>
-
-            <input
-              id="top10-poster-10"
-              name="top10-poster-10"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-            >
-
-            <small>
-              JPG, PNG or WebP
-            </small>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-
-      <!-- SAVE AREA -->
-
-      <section class="section">
 
         <div
-          style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"
+          id="top10-loading"
+          style="padding:20px 0"
+        >
+          Loading Top 10 lists...
+        </div>
+
+
+        <div
+          id="top10-error"
+          class="form-status"
+          style="display:none"
+        ></div>
+
+
+        <div
+          id="top10-empty"
+          style="display:none;padding:20px 0"
         >
 
-          <button
-            type="submit"
-            class="btn btn-primary"
-          >
-            Save Top 10
-          </button>
-
+          <p>
+            No Top 10 lists have been created yet.
+          </p>
 
           <a
-            href="/admin/index.html"
-            class="btn btn-ghost"
+            href="/admin/top-10-edit.html"
+            class="btn btn-primary"
           >
-            Cancel
+            + Create Your First Top 10
           </a>
-
-
-          <span
-            id="top10-status"
-            class="form-status"
-          ></span>
 
         </div>
 
-      </section>
+
+        <div
+          id="top10-table-wrap"
+          style="display:none;overflow-x:auto"
+        >
+
+          <table
+            style="width:100%;border-collapse:collapse"
+          >
+
+            <thead>
+
+              <tr>
+
+                <th
+                  style="text-align:left;padding:14px 10px"
+                >
+                  Top 10 List
+                </th>
+
+                <th
+                  style="text-align:left;padding:14px 10px"
+                >
+                  Description
+                </th>
+
+                <th
+                  style="text-align:left;padding:14px 10px"
+                >
+                  Status
+                </th>
+
+                <th
+                  style="text-align:left;padding:14px 10px"
+                >
+                  Updated
+                </th>
+
+                <th
+                  style="text-align:left;padding:14px 10px"
+                >
+                  Actions
+                </th>
+
+              </tr>
+
+            </thead>
 
 
-    </form>
+            <tbody id="top10-list">
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+      </div>
+
+    </section>
 
 
   </main>
@@ -1352,8 +279,6 @@
 <script src="/assets/js/api.js"></script>
 
 <script src="/assets/js/admin/common.js"></script>
-
-<script src="/assets/js/admin/top10.js"></script>
 
 
 <!-- ADMIN LOGIN CHECK -->
@@ -1368,7 +293,247 @@ document.addEventListener(
       window.admin &&
       typeof admin.requireLogin === "function"
     ) {
+
       await admin.requireLogin();
+
+    }
+
+  }
+);
+
+</script>
+
+
+<!-- TOP 10 MANAGER -->
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    const loading =
+      document.getElementById("top10-loading");
+
+    const errorBox =
+      document.getElementById("top10-error");
+
+    const emptyBox =
+      document.getElementById("top10-empty");
+
+    const tableWrap =
+      document.getElementById("top10-table-wrap");
+
+    const list =
+      document.getElementById("top10-list");
+
+
+    try {
+
+      const response =
+        await fetch("/api/top10/posts", {
+          credentials: "include"
+        });
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        !response.ok ||
+        !data.ok
+      ) {
+
+        throw new Error(
+          data.error ||
+          "Failed to load Top 10 lists."
+        );
+
+      }
+
+
+      loading.style.display = "none";
+
+
+      const posts =
+        Array.isArray(data.posts)
+          ? data.posts
+          : [];
+
+
+      if (!posts.length) {
+
+        emptyBox.style.display = "block";
+
+        return;
+
+      }
+
+
+      tableWrap.style.display = "block";
+
+
+      posts.forEach(
+        (post) => {
+
+          const row =
+            document.createElement("tr");
+
+
+          row.style.borderTop =
+            "1px solid rgba(255,255,255,.08)";
+
+
+          const titleCell =
+            document.createElement("td");
+
+          titleCell.style.padding =
+            "16px 10px";
+
+
+          const title =
+            document.createElement("strong");
+
+          title.textContent =
+            post.title || "Untitled Top 10";
+
+
+          titleCell.appendChild(title);
+
+
+          const descriptionCell =
+            document.createElement("td");
+
+          descriptionCell.style.padding =
+            "16px 10px";
+
+
+          descriptionCell.textContent =
+            post.description || "—";
+
+
+          const statusCell =
+            document.createElement("td");
+
+          statusCell.style.padding =
+            "16px 10px";
+
+
+          const status =
+            document.createElement("span");
+
+          status.textContent =
+            post.status || "draft";
+
+
+          statusCell.appendChild(status);
+
+
+          const updatedCell =
+            document.createElement("td");
+
+          updatedCell.style.padding =
+            "16px 10px";
+
+
+          updatedCell.textContent =
+            post.updated_at
+              ? new Date(
+                  post.updated_at
+                ).toLocaleDateString()
+              : "—";
+
+
+          const actionsCell =
+            document.createElement("td");
+
+          actionsCell.style.padding =
+            "16px 10px";
+
+
+          const editLink =
+            document.createElement("a");
+
+          editLink.href =
+            "/admin/top-10-edit.html?id=" +
+            encodeURIComponent(post.id);
+
+          editLink.className =
+            "btn btn-ghost";
+
+          editLink.textContent =
+            "Edit";
+
+
+          const viewLink =
+            document.createElement("a");
+
+          viewLink.href =
+            "/top-10.html?slug=" +
+            encodeURIComponent(post.slug);
+
+          viewLink.className =
+            "btn btn-ghost";
+
+          viewLink.textContent =
+            "View";
+
+
+          actionsCell.appendChild(
+            editLink
+          );
+
+          actionsCell.appendChild(
+            document.createTextNode(" ")
+          );
+
+          actionsCell.appendChild(
+            viewLink
+          );
+
+
+          row.appendChild(
+            titleCell
+          );
+
+          row.appendChild(
+            descriptionCell
+          );
+
+          row.appendChild(
+            statusCell
+          );
+
+          row.appendChild(
+            updatedCell
+          );
+
+          row.appendChild(
+            actionsCell
+          );
+
+
+          list.appendChild(row);
+
+        }
+      );
+
+
+    } catch (error) {
+
+      loading.style.display =
+        "none";
+
+
+      errorBox.style.display =
+        "block";
+
+
+      errorBox.textContent =
+        error.message ||
+        "Failed to load Top 10 lists.";
+
     }
 
   }
@@ -1378,4 +543,5 @@ document.addEventListener(
 
 
 </body>
+
 </html>
