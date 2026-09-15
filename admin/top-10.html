@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>
+    Top 10 Manager — FilmParadise BD
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/style.css"
+  >
+
+</head>
+
+
+<body class="admin-body">
+
+
+<div class="admin-shell">
+
+
+  <!-- SIDEBAR -->
+
+  <aside class="admin-sidebar">
+
+    <a
+      class="brand admin-side-brand"
+      href="/"
+    >
+      <span>FILM</span>PARADISE <b>BD</b>
+    </a>
+
+
+    <nav class="admin-nav">
+
+      <a href="/admin/index.html">
+        Dashboard
+      </a>
+
+      <a href="/admin/movies.html">
+        Movies & Series
+      </a>
+
+      <a href="/admin/movie-form.html">
+        Add Title
+      </a>
+
+      <a href="/admin/articles.html">
+        Articles
+      </a>
+
+      <a href="/admin/article-form.html">
+        Add Article
+      </a>
+
+      <a
+        class="active"
+        href="/admin/top-10.html"
+      >
+        Top 10 Manager
+      </a>
+
+      <a href="/admin/reviews.html">
+        Reviews
+      </a>
+
+      <a href="/admin/categories.html">
+        Categories
+      </a>
+
+      <a
+        href="#"
+        id="logoutBtn"
+      >
+        Log out
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+
+  <main class="admin-main">
+
+
+    <div class="admin-header">
+
+      <div>
+
+        <div class="eyebrow">
+          CONTENT CONTROL
+        </div>
+
+        <h1>
+          Top 10 Manager
+        </h1>
+
+        <p class="admin-subtitle">
+          Create and manage the 10 movies shown in the
+          FilmParadise BD Top 10 section.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <section class="section">
+
+      <div class="panel">
+
+        <h2>
+          Top 10 Movies
+        </h2>
+
+        <p>
+          Add a separate movie entry for each ranking.
+          These Top 10 entries are independent from the
+          Movies & Series database.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- TOP 10 FORM -->
+
+    <form
+      id="top10Form"
+      enctype="multipart/form-data"
+    >
+
+
+      <!-- RANK 1 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 01
+            </span>
+
+            <h2>
+              #1 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <div class="field">
+
+            <label for="title_1">
+              Movie Title
+            </label>
+
+            <input
+              id="title_1"
+              name="title_1"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_1">
+              Release Year
+            </label>
+
+            <input
+              id="year_1"
+              name="year_1"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_1">
+              Language
+            </label>
+
+            <input
+              id="language_1"
+              name="language_1"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_1">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_1"
+              name="description_1"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_1">
+              Poster
+            </label>
+
+            <input
+              id="poster_1"
+              name="poster_1"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 2 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 02
+            </span>
+
+            <h2>
+              #2 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_2">
+              Movie Title
+            </label>
+
+            <input
+              id="title_2"
+              name="title_2"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_2">
+              Release Year
+            </label>
+
+            <input
+              id="year_2"
+              name="year_2"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_2">
+              Language
+            </label>
+
+            <input
+              id="language_2"
+              name="language_2"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_2">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_2"
+              name="description_2"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_2">
+              Poster
+            </label>
+
+            <input
+              id="poster_2"
+              name="poster_2"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 3 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 03
+            </span>
+
+            <h2>
+              #3 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_3">
+              Movie Title
+            </label>
+
+            <input
+              id="title_3"
+              name="title_3"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_3">
+              Release Year
+            </label>
+
+            <input
+              id="year_3"
+              name="year_3"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_3">
+              Language
+            </label>
+
+            <input
+              id="language_3"
+              name="language_3"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_3">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_3"
+              name="description_3"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_3">
+              Poster
+            </label>
+
+            <input
+              id="poster_3"
+              name="poster_3"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 4 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 04
+            </span>
+
+            <h2>
+              #4 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_4">
+              Movie Title
+            </label>
+
+            <input
+              id="title_4"
+              name="title_4"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_4">
+              Release Year
+            </label>
+
+            <input
+              id="year_4"
+              name="year_4"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_4">
+              Language
+            </label>
+
+            <input
+              id="language_4"
+              name="language_4"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_4">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_4"
+              name="description_4"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_4">
+              Poster
+            </label>
+
+            <input
+              id="poster_4"
+              name="poster_4"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 5 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 05
+            </span>
+
+            <h2>
+              #5 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_5">
+              Movie Title
+            </label>
+
+            <input
+              id="title_5"
+              name="title_5"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_5">
+              Release Year
+            </label>
+
+            <input
+              id="year_5"
+              name="year_5"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_5">
+              Language
+            </label>
+
+            <input
+              id="language_5"
+              name="language_5"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_5">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_5"
+              name="description_5"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_5">
+              Poster
+            </label>
+
+            <input
+              id="poster_5"
+              name="poster_5"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 6 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 06
+            </span>
+
+            <h2>
+              #6 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_6">
+              Movie Title
+            </label>
+
+            <input
+              id="title_6"
+              name="title_6"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_6">
+              Release Year
+            </label>
+
+            <input
+              id="year_6"
+              name="year_6"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_6">
+              Language
+            </label>
+
+            <input
+              id="language_6"
+              name="language_6"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_6">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_6"
+              name="description_6"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_6">
+              Poster
+            </label>
+
+            <input
+              id="poster_6"
+              name="poster_6"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 7 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 07
+            </span>
+
+            <h2>
+              #7 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_7">
+              Movie Title
+            </label>
+
+            <input
+              id="title_7"
+              name="title_7"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_7">
+              Release Year
+            </label>
+
+            <input
+              id="year_7"
+              name="year_7"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_7">
+              Language
+            </label>
+
+            <input
+              id="language_7"
+              name="language_7"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_7">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_7"
+              name="description_7"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_7">
+              Poster
+            </label>
+
+            <input
+              id="poster_7"
+              name="poster_7"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 8 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 08
+            </span>
+
+            <h2>
+              #8 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_8">
+              Movie Title
+            </label>
+
+            <input
+              id="title_8"
+              name="title_8"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_8">
+              Release Year
+            </label>
+
+            <input
+              id="year_8"
+              name="year_8"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_8">
+              Language
+            </label>
+
+            <input
+              id="language_8"
+              name="language_8"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_8">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_8"
+              name="description_8"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_8">
+              Poster
+            </label>
+
+            <input
+              id="poster_8"
+              name="poster_8"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 9 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 09
+            </span>
+
+            <h2>
+              #9 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_9">
+              Movie Title
+            </label>
+
+            <input
+              id="title_9"
+              name="title_9"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_9">
+              Release Year
+            </label>
+
+            <input
+              id="year_9"
+              name="year_9"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_9">
+              Language
+            </label>
+
+            <input
+              id="language_9"
+              name="language_9"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_9">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_9"
+              name="description_9"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_9">
+              Poster
+            </label>
+
+            <input
+              id="poster_9"
+              name="poster_9"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- RANK 10 -->
+
+      <section class="section">
+
+        <div class="section-head">
+
+          <div>
+
+            <span class="eyebrow">
+              RANK 10
+            </span>
+
+            <h2>
+              #10 Movie
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label for="title_10">
+              Movie Title
+            </label>
+
+            <input
+              id="title_10"
+              name="title_10"
+              type="text"
+              placeholder="Enter movie title"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="year_10">
+              Release Year
+            </label>
+
+            <input
+              id="year_10"
+              name="year_10"
+              type="number"
+              min="1900"
+              max="2100"
+              placeholder="2026"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="language_10">
+              Language
+            </label>
+
+            <input
+              id="language_10"
+              name="language_10"
+              type="text"
+              placeholder="English"
+            >
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="description_10">
+              Short Description
+            </label>
+
+            <textarea
+              id="description_10"
+              name="description_10"
+              rows="4"
+              placeholder="Write a short description about this movie..."
+            ></textarea>
+
+          </div>
+
+
+          <div class="field field-full">
+
+            <label for="poster_10">
+              Poster
+            </label>
+
+            <input
+              id="poster_10"
+              name="poster_10"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+              JPG, PNG or WebP
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- SAVE AREA -->
+
+      <section class="section">
+
+        <div
+          style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"
+        >
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Save Top 10
+          </button>
+
+
+          <a
+            href="/admin/index.html"
+            class="btn btn-ghost"
+          >
+            Cancel
+          </a>
+
+
+          <span
+            id="formStatus"
+            class="form-status"
+          ></span>
+
+        </div>
+
+      </section>
+
+
+    </form>
+
+
+  </main>
+
+</div>
+
+
+<script src="/assets/js/api.js"></script>
+
+<script src="/assets/js/admin/common.js"></script>
+
+
+<script>
+
+document.addEventListener(
+  'DOMContentLoaded',
+  async () => {
+
+    if (!await admin.requireLogin()) {
+      return;
+    }
+
+    const form =
+      document.getElementById('top10Form');
+
+    const status =
+      document.getElementById('formStatus');
+
+
+    form.addEventListener(
+      'submit',
+      async (e) => {
+
+        e.preventDefault();
+
+        status.textContent =
+          'Top 10 saving system is not connected yet.';
+
+      }
+    );
+
+  }
+);
+
+</script>
+
+
+</body>
+</html>
