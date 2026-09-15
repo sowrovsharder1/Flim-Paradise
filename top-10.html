@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Top 10 — FilmParadise BD</title>
+  <meta name="description" content="FilmParadise BD Top 10 movie list.">
+
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <div class="container nav-wrap">
+
+    <a class="brand" href="/">
+      <span>FILM</span>PARADISE <b>BD</b>
+    </a>
+
+    <button
+      class="menu-btn"
+      id="menuBtn"
+      aria-label="Open menu"
+    >
+      ☰
+    </button>
+
+    <nav id="nav">
+
+      <a href="/">Home</a>
+
+      <a href="/browse.html?article_type=review">
+        Reviews
+      </a>
+
+      <a href="/browse.html?article_type=news">
+        News
+      </a>
+
+      <a href="/browse.html?trailer=1">
+        Trailers
+      </a>
+
+      <a href="/browse.html?article_type=box-office">
+        Box Office
+      </a>
+
+      <a
+        class="active"
+        href="/top-10.html"
+      >
+        Top 10
+      </a>
+
+      <a href="/web-series.html">
+        Series
+      </a>
+
+    </nav>
+
+    <form
+      id="searchForm"
+      class="nav-search"
+    >
+
+      <input
+        name="q"
+        placeholder="Search movies, series..."
+        aria-label="Search"
+      >
+
+    </form>
+
+  </div>
+
+</header>
+
+
+<main class="container browse-page">
+
+  <div class="eyebrow">
+    RANKED LIST
+  </div>
+
+  <h1>
+    Top 10 Movies
+  </h1>
+
+  <div
+    class="top10-public"
+    id="top10List"
+  >
+
+    <div class="loading">
+      Loading Top 10…
+    </div>
+
+  </div>
+
+</main>
+
+
+<footer>
+
+  <div class="container copyright">
+    © 2026 FilmParadise BD
+  </div>
+
+</footer>
+
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/site.js"></script>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+  try {
+
+    const d = await fp.apiFetch('/top10');
+
+    const list = document.getElementById('top10List');
+
+    if (!d.top10 || !d.top10.length) {
+
+      list.innerHTML =
+        '<div class="empty">Top 10 has not been set yet.</div>';
+
+      return;
+    }
+
+    list.innerHTML = d.top10.map(x => `
+
+      <a
+        class="top10-public-row"
+        href="/movie.html?slug=${encodeURIComponent(x.slug)}"
+      >
+
+        <div class="top10-public-rank">
+          #${x.rank}
+        </div>
+
+        <div class="top10-public-poster">
+
+          <img
+            src="${fp.esc(x.poster_url || '')}"
+            alt="${fp.esc(x.title || '')}"
+          >
+
+        </div>
+
+        <div class="top10-public-info">
+
+          <h2>
+            ${fp.esc(x.title)}
+          </h2>
+
+          <div class="card-meta">
+
+            ${fp.esc(x.year || '')}
+
+            ${x.language
+              ? ` · ${fp.esc(x.language)}`
+              : ''
+            }
+
+            ${x.imdb_rating
+              ? ` · IMDb ${fp.esc(x.imdb_rating)}`
+              : ''
+            }
+
+          </div>
+
+          <p>
+            ${fp.esc(x.note || '')}
+          </p>
+
+        </div>
+
+      </a>
+
+    `).join('');
+
+  } catch (e) {
+
+    document.getElementById('top10List').innerHTML =
+      `<div class="empty">${fp.esc(e.message)}</div>`;
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
