@@ -3,24 +3,24 @@
 
 <head>
 
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  />
+  >
 
   <title>Add Top 10 | FilmParadise BD</title>
 
   <meta
     name="description"
     content="Create a Top 10 movie list for FilmParadise BD."
-  />
+  >
 
   <link
     rel="stylesheet"
     href="/assets/css/style.css"
-  />
+  >
 
   <style>
 
@@ -41,15 +41,15 @@
 
     .top10-edit-header p {
       margin: 0;
-      opacity: 0.7;
+      opacity: .7;
     }
 
     .top10-form-section {
       margin-bottom: 28px;
       padding: 24px;
       border-radius: 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
     }
 
     .top10-form-section h2 {
@@ -80,8 +80,8 @@
       box-sizing: border-box;
       padding: 11px 13px;
       border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
       color: inherit;
       font: inherit;
       outline: none;
@@ -90,7 +90,7 @@
     .top10-form-group input:focus,
     .top10-form-group textarea:focus,
     .top10-form-group select:focus {
-      border-color: rgba(255,216,77,0.7);
+      border-color: rgba(255,216,77,.7);
     }
 
     .top10-form-group textarea {
@@ -110,8 +110,8 @@
       margin-bottom: 24px;
       padding: 22px;
       border-radius: 12px;
-      background: rgba(255,255,255,0.025);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.08);
     }
 
     .top10-item:last-child {
@@ -138,9 +138,9 @@
       align-items: center;
       padding: 5px 9px;
       border-radius: 6px;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,.08);
       font-size: 12px;
-      opacity: 0.75;
+      opacity: .75;
     }
 
     .top10-item-grid {
@@ -161,14 +161,14 @@
       height: 255px;
       border-radius: 9px;
       overflow: hidden;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       font-size: 12px;
-      opacity: 0.7;
+      opacity: .7;
     }
 
     .top10-poster-preview img {
@@ -221,35 +221,43 @@
     }
 
     .top10-save-btn:hover {
-      opacity: 0.9;
+      opacity: .9;
     }
 
     .top10-save-btn:disabled {
-      opacity: 0.5;
+      opacity: .5;
       cursor: not-allowed;
     }
 
     .top10-cancel-btn {
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
       color: inherit;
     }
 
     .top10-cancel-btn:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,.1);
     }
 
     .top10-status {
       min-height: 20px;
       font-size: 14px;
-      opacity: 0.85;
+      opacity: .9;
+    }
+
+    .top10-status.success {
+      color: #69e781;
+    }
+
+    .top10-status.error {
+      color: #ff6b6b;
     }
 
     .top10-note {
       margin-top: 10px;
       font-size: 12px;
       line-height: 1.6;
-      opacity: 0.6;
+      opacity: .6;
     }
 
     @media (max-width: 800px) {
@@ -373,10 +381,7 @@
 
 
 
-  <form
-    id="top10-edit-form"
-    enctype="multipart/form-data"
-  >
+  <form id="top10-edit-form">
 
 
     <!-- TOP 10 POST INFORMATION -->
@@ -390,7 +395,6 @@
 
       <div class="top10-post-info">
 
-
         <div class="top10-form-group">
 
           <label for="top10-title">
@@ -403,7 +407,7 @@
             name="title"
             placeholder="Example: Top 10 Horror Movies You Should Watch"
             required
-          />
+          >
 
           <div class="top10-note">
             This will be the main title of your Top 10 post.
@@ -435,7 +439,6 @@
 
         </div>
 
-
       </div>
 
 
@@ -466,956 +469,7 @@
       </h2>
 
 
-
-      <!-- #1 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-
-          <h3 class="top10-item-rank">
-            #1 Movie
-          </h3>
-
-          <span class="top10-item-badge">
-            Main Poster
-          </span>
-
-        </div>
-
-
-        <div class="top10-item-grid">
-
-          <div>
-
-
-            <div class="top10-form-group">
-
-              <label for="top10-title-1">
-                Movie Title
-              </label>
-
-              <input
-                type="text"
-                id="top10-title-1"
-                name="title_1"
-                placeholder="Movie title"
-                required
-              />
-
-            </div>
-
-
-            <div class="top10-form-group">
-
-              <label for="top10-year-1">
-                Release Year
-              </label>
-
-              <input
-                type="number"
-                id="top10-year-1"
-                name="year_1"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-
-            </div>
-
-
-            <div class="top10-form-group">
-
-              <label for="top10-language-1">
-                Language
-              </label>
-
-              <input
-                type="text"
-                id="top10-language-1"
-                name="language_1"
-                placeholder="English"
-                required
-              />
-
-            </div>
-
-
-            <div class="top10-form-group">
-
-              <label for="top10-description-1">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-1"
-                name="description_1"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-
-            </div>
-
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>
-              Poster
-            </label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-1"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-1"
-              name="poster_1"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #2 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#2 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-2">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-2"
-                name="title_2"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-2">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-2"
-                name="year_2"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-2">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-2"
-                name="language_2"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-2">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-2"
-                name="description_2"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-2"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-2"
-              name="poster_2"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #3 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#3 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-3">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-3"
-                name="title_3"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-3">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-3"
-                name="year_3"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-3">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-3"
-                name="language_3"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-3">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-3"
-                name="description_3"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-3"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-3"
-              name="poster_3"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #4 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#4 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-4">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-4"
-                name="title_4"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-4">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-4"
-                name="year_4"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-4">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-4"
-                name="language_4"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-4">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-4"
-                name="description_4"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-4"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-4"
-              name="poster_4"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #5 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#5 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-5">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-5"
-                name="title_5"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-5">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-5"
-                name="year_5"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-5">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-5"
-                name="language_5"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-5">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-5"
-                name="description_5"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-5"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-5"
-              name="poster_5"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #6 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#6 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-6">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-6"
-                name="title_6"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-6">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-6"
-                name="year_6"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-6">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-6"
-                name="language_6"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-6">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-6"
-                name="description_6"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-6"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-6"
-              name="poster_6"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #7 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#7 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-7">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-7"
-                name="title_7"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-7">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-7"
-                name="year_7"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-7">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-7"
-                name="language_7"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-7">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-7"
-                name="description_7"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-7"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-7"
-              name="poster_7"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #8 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#8 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-8">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-8"
-                name="title_8"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-8">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-8"
-                name="year_8"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-8">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-8"
-                name="language_8"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-8">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-8"
-                name="description_8"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-8"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-8"
-              name="poster_8"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #9 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#9 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-9">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-9"
-                name="title_9"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-9">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-9"
-                name="year_9"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-9">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-9"
-                name="language_9"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-9">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-9"
-                name="description_9"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-9"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-9"
-              name="poster_9"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- #10 -->
-
-      <div class="top10-item">
-
-        <div class="top10-item-header">
-          <h3 class="top10-item-rank">#10 Movie</h3>
-        </div>
-
-        <div class="top10-item-grid">
-
-          <div>
-
-            <div class="top10-form-group">
-              <label for="top10-title-10">Movie Title</label>
-
-              <input
-                type="text"
-                id="top10-title-10"
-                name="title_10"
-                placeholder="Movie title"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-year-10">Release Year</label>
-
-              <input
-                type="number"
-                id="top10-year-10"
-                name="year_10"
-                placeholder="2025"
-                min="1800"
-                max="2100"
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-language-10">Language</label>
-
-              <input
-                type="text"
-                id="top10-language-10"
-                name="language_10"
-                placeholder="English"
-                required
-              />
-            </div>
-
-            <div class="top10-form-group">
-              <label for="top10-description-10">
-                Short Description
-              </label>
-
-              <textarea
-                id="top10-description-10"
-                name="description_10"
-                placeholder="Write a short description of this movie..."
-              ></textarea>
-            </div>
-
-          </div>
-
-
-          <div class="top10-poster-area">
-
-            <label>Poster</label>
-
-            <div
-              class="top10-poster-preview"
-              id="top10-poster-preview-10"
-            >
-              No poster selected
-            </div>
-
-            <input
-              class="top10-file-input"
-              type="file"
-              id="top10-poster-10"
-              name="poster_10"
-              accept="image/jpeg,image/png,image/webp"
-              required
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
+      <div id="top10-items-container"></div>
 
     </section>
 
@@ -1472,7 +526,6 @@
 
 
 <script src="/assets/js/api.js"></script>
-
 <script src="/assets/js/admin/common.js"></script>
 
 
@@ -1481,8 +534,7 @@
 
 document.addEventListener(
   "DOMContentLoaded",
-  async () => {
-
+  async function () {
 
     /*
     =====================================================
@@ -1492,10 +544,181 @@ document.addEventListener(
 
     if (
       window.admin &&
-      typeof admin.requireLogin === "function"
+      typeof window.admin.requireLogin === "function"
     ) {
 
-      await admin.requireLogin();
+      await window.admin.requireLogin();
+
+    }
+
+
+    /*
+    =====================================================
+    ELEMENTS
+    =====================================================
+    */
+
+    const form =
+      document.getElementById(
+        "top10-edit-form"
+      );
+
+    const saveButton =
+      document.getElementById(
+        "top10-save-btn"
+      );
+
+    const statusMessage =
+      document.getElementById(
+        "top10-status-message"
+      );
+
+    const itemsContainer =
+      document.getElementById(
+        "top10-items-container"
+      );
+
+
+    /*
+    =====================================================
+    CREATE 10 MOVIE FORMS
+    =====================================================
+    */
+
+    for (
+      let rank = 1;
+      rank <= 10;
+      rank++
+    ) {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "top10-item";
+
+
+      item.innerHTML = `
+
+        <div class="top10-item-header">
+
+          <h3 class="top10-item-rank">
+            #${rank} Movie
+          </h3>
+
+          ${
+            rank === 1
+              ? `
+                <span class="top10-item-badge">
+                  Main Poster
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div class="top10-item-grid">
+
+          <div>
+
+            <div class="top10-form-group">
+
+              <label for="top10-title-${rank}">
+                Movie Title
+              </label>
+
+              <input
+                type="text"
+                id="top10-title-${rank}"
+                placeholder="Movie title"
+                required
+              >
+
+            </div>
+
+
+            <div class="top10-form-group">
+
+              <label for="top10-year-${rank}">
+                Release Year
+              </label>
+
+              <input
+                type="number"
+                id="top10-year-${rank}"
+                placeholder="2025"
+                min="1800"
+                max="2100"
+              >
+
+            </div>
+
+
+            <div class="top10-form-group">
+
+              <label for="top10-language-${rank}">
+                Language
+              </label>
+
+              <input
+                type="text"
+                id="top10-language-${rank}"
+                placeholder="English"
+                required
+              >
+
+            </div>
+
+
+            <div class="top10-form-group">
+
+              <label for="top10-description-${rank}">
+                Short Description
+              </label>
+
+              <textarea
+                id="top10-description-${rank}"
+                placeholder="Write a short description of this movie..."
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="top10-poster-area">
+
+            <label>
+              Poster
+            </label>
+
+            <div
+              class="top10-poster-preview"
+              id="top10-poster-preview-${rank}"
+            >
+              No poster selected
+            </div>
+
+            <input
+              class="top10-file-input"
+              type="file"
+              id="top10-poster-${rank}"
+              accept="image/jpeg,image/png,image/webp"
+              required
+            >
+
+          </div>
+
+        </div>
+
+      `;
+
+
+      itemsContainer.appendChild(
+        item
+      );
 
     }
 
@@ -1517,26 +740,15 @@ document.addEventListener(
           `top10-poster-${rank}`
         );
 
-
       const preview =
         document.getElementById(
           `top10-poster-preview-${rank}`
         );
 
 
-      if (
-        !input ||
-        !preview
-      ) {
-
-        continue;
-
-      }
-
-
       input.addEventListener(
         "change",
-        () => {
+        function () {
 
           const file =
             input.files &&
@@ -1583,7 +795,7 @@ document.addEventListener(
             input.value = "";
 
             preview.textContent =
-              "Poster must be smaller than 5MB.";
+              "Poster must be 5MB or smaller.";
 
             return;
 
@@ -1595,10 +807,9 @@ document.addEventListener(
 
 
           reader.onload =
-            (event) => {
+            function (event) {
 
-              preview.innerHTML =
-                "";
+              preview.innerHTML = "";
 
 
               const img =
@@ -1632,35 +843,15 @@ document.addEventListener(
     }
 
 
-
     /*
     =====================================================
-    FORM
+    FORM SUBMIT
     =====================================================
     */
 
-    const form =
-      document.getElementById(
-        "top10-edit-form"
-      );
-
-
-    const saveButton =
-      document.getElementById(
-        "top10-save-btn"
-      );
-
-
-    const statusMessage =
-      document.getElementById(
-        "top10-status-message"
-      );
-
-
-
     form.addEventListener(
       "submit",
-      async (event) => {
+      async function (event) {
 
         event.preventDefault();
 
@@ -1669,13 +860,20 @@ document.addEventListener(
           true;
 
 
+        statusMessage.className =
+          "top10-status";
+
+
+        statusMessage.textContent =
+          "Preparing Top 10 post...";
+
+
         try {
 
-
           /*
-          ===============================================
+          -----------------------------------------------
           TOP 10 INFORMATION
-          ===============================================
+          -----------------------------------------------
           */
 
           const title =
@@ -1713,14 +911,13 @@ document.addEventListener(
           }
 
 
-
           /*
-          ===============================================
+          -----------------------------------------------
           COLLECT MOVIES
-          ===============================================
+          -----------------------------------------------
           */
 
-          const items = [];
+          const movies = [];
 
 
           for (
@@ -1728,7 +925,6 @@ document.addEventListener(
             rank <= 10;
             rank++
           ) {
-
 
             const movieTitle =
               document
@@ -1739,7 +935,7 @@ document.addEventListener(
                 .trim();
 
 
-            const year =
+            const yearValue =
               document
                 .getElementById(
                   `top10-year-${rank}`
@@ -1773,7 +969,6 @@ document.addEventListener(
 
 
             const file =
-              posterInput &&
               posterInput.files &&
               posterInput.files[0];
 
@@ -1805,49 +1000,44 @@ document.addEventListener(
             }
 
 
-            items.push({
+            movies.push({
 
               rank: rank,
 
-              title:
-                movieTitle,
+              title: movieTitle,
 
               release_year:
-                year
-                  ? Number(year)
+                yearValue
+                  ? Number(yearValue)
                   : null,
 
-              language:
-                language,
+              language: language,
 
               short_description:
                 movieDescription,
 
-              file:
-                file
+              file: file
 
             });
 
           }
 
 
-
           /*
-          ===============================================
+          -----------------------------------------------
           UPLOAD POSTERS
-          ===============================================
+          -----------------------------------------------
           */
 
           const savedItems = [];
 
 
           for (
-            const item of items
+            const movie of movies
           ) {
 
-
             statusMessage.textContent =
-              `Uploading poster ${item.rank}/10...`;
+              `Uploading poster ${movie.rank}/10...`;
 
 
             const uploadForm =
@@ -1856,13 +1046,13 @@ document.addEventListener(
 
             uploadForm.append(
               "file",
-              item.file
+              movie.file
             );
 
 
             uploadForm.append(
               "rank",
-              String(item.rank)
+              String(movie.rank)
             );
 
 
@@ -1885,10 +1075,10 @@ document.addEventListener(
               uploadResult =
                 await uploadResponse.json();
 
-            } catch {
+            } catch (error) {
 
               throw new Error(
-                `Poster upload failed for #${item.rank}.`
+                `Invalid upload response for #${movie.rank}.`
               );
 
             }
@@ -1901,7 +1091,7 @@ document.addEventListener(
 
               throw new Error(
                 uploadResult.error ||
-                `Poster upload failed for #${item.rank}.`
+                `Poster upload failed for #${movie.rank}.`
               );
 
             }
@@ -1910,19 +1100,19 @@ document.addEventListener(
             savedItems.push({
 
               rank:
-                item.rank,
+                movie.rank,
 
               title:
-                item.title,
+                movie.title,
 
               release_year:
-                item.release_year,
+                movie.release_year,
 
               language:
-                item.language,
+                movie.language,
 
               short_description:
-                item.short_description,
+                movie.short_description,
 
               poster_key:
                 uploadResult.key,
@@ -1935,11 +1125,10 @@ document.addEventListener(
           }
 
 
-
           /*
-          ===============================================
-          SAVE TOP 10 POST TO D1
-          ===============================================
+          -----------------------------------------------
+          SAVE TO D1
+          -----------------------------------------------
           */
 
           statusMessage.textContent =
@@ -1975,8 +1164,7 @@ document.addEventListener(
                       savedItems
 
                   })
-
-                }
+              }
             );
 
 
@@ -1988,7 +1176,7 @@ document.addEventListener(
             result =
               await response.json();
 
-          } catch {
+          } catch (error) {
 
             throw new Error(
               "The server returned an invalid response."
@@ -2010,12 +1198,15 @@ document.addEventListener(
           }
 
 
-
           /*
-          ===============================================
+          -----------------------------------------------
           SUCCESS
-          ===============================================
+          -----------------------------------------------
           */
+
+          statusMessage.className =
+            "top10-status success";
+
 
           statusMessage.textContent =
             "Top 10 post saved successfully!";
@@ -2026,23 +1217,26 @@ document.addEventListener(
 
 
           setTimeout(
-            () => {
+            function () {
 
               window.location.href =
                 "/admin/top-10.html";
 
             },
-            900
+            1000
           );
 
 
         } catch (error) {
 
-
           console.error(
             "Top 10 save error:",
             error
           );
+
+
+          statusMessage.className =
+            "top10-status error";
 
 
           statusMessage.textContent =
