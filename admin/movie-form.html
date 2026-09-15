@@ -1,1 +1,452 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Movie — Admin</title><link rel="stylesheet" href="/assets/css/style.css"></head><body class="admin-body"><div class="admin-shell"><aside class="admin-sidebar"><a class="brand admin-side-brand" href="/"><span>FILM</span>PARADISE <b>BD</b></a><nav class="admin-nav"><a href="/admin/index.html">Dashboard</a><a href="/admin/movies.html">Movies & Series</a><a class="active" href="/admin/movie-form.html">Add Title</a><a href="/admin/articles.html">Articles</a><a href="/admin/article-form.html">Add Article</a><a href="/admin/reviews.html">Reviews</a><a href="/admin/categories.html">Categories</a><a href="#" id="logoutBtn">Log out</a></nav></aside><main class="admin-main"><div class="admin-header"><div><div class="eyebrow">TITLE MANAGER</div><h1 id="heading">Add Title</h1></div></div><form class="admin-form" id="form"><div class="form-grid"><div class="full"><label>Title *</label><input name="title" id="title" required></div><div><label>Slug</label><input name="slug" id="slug" placeholder="auto-generated"></div><div><label>Type</label><select name="type"><option value="movie">Movie</option><option value="series">Web Series</option></select></div><div class="full"><label>Poster</label><div style="display:flex;gap:12px;align-items:center"><div class="upload-preview" id="preview"></div><div style="flex:1"><input type="file" id="posterFile" accept="image/jpeg,image/png,image/webp"><input name="poster_url" id="posterUrl" placeholder="or paste image URL"></div></div><div id="uploadMsg" class="form-msg"></div></div><div><label>Year</label><input name="year" type="number"></div><div><label>IMDb rating</label><input name="imdb_rating" type="number" min="0" max="10" step="0.1"></div><div><label>Language</label><input name="language"></div><div><label>Country</label><input name="country"></div><div class="full"><label>Genre</label><input name="genre" placeholder="Action, Thriller"></div><div><label>Quality</label><input name="quality" placeholder="HD / 4K"></div><div><label>Duration</label><input name="duration" placeholder="2h 10m"></div><div><label>Release date</label><input name="release_date" type="date"></div><div><label>Director</label><input name="director"></div><div class="full"><label>Cast</label><input name="cast"></div><div class="full"><label>Trailer URL (YouTube)</label><input name="trailer_url"></div><div class="full"><label>Box office</label><input name="box_office" placeholder="$120M worldwide"></div><div class="full"><label>Summary / Review notes</label><textarea name="synopsis" rows="8" placeholder="Write a concise, original summary."></textarea></div><div class="full"><label>Categories</label><div id="cats" class="chip-select">Loading…</div></div><div><label>Status</label><select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></div><div><label>Options</label><div><label class="checkbox-row"><input type="checkbox" name="is_featured"> Featured</label><label class="checkbox-row"><input type="checkbox" name="is_pinned"> Recommended / Top list</label></div></div></div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" id="save">Save title</button><a class="btn btn-ghost" href="/admin/movies.html">Cancel</a><button type="button" class="btn btn-ghost" id="deleteBtn" style="display:none">Delete</button><span id="msg" class="form-msg"></span></div></form></main></div><script src="/assets/js/api.js"></script><script src="/assets/js/admin/common.js"></script><script src="/assets/js/admin/movie-form.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Movie — Admin</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body class="admin-body">
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar">
+    <a class="brand admin-side-brand" href="/">
+      <span>FILM</span>PARADISE <b>BD</b>
+    </a>
+
+    <nav class="admin-nav">
+      <a href="/admin/index.html">Dashboard</a>
+      <a href="/admin/movies.html">Movies & Series</a>
+      <a class="active" href="/admin/movie-form.html">Add Title</a>
+      <a href="/admin/articles.html">Articles</a>
+      <a href="/admin/article-form.html">Add Article</a>
+      <a href="/admin/reviews.html">Reviews</a>
+      <a href="/admin/categories.html">Categories</a>
+      <a href="#" id="logoutBtn">Log out</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+
+    <div class="admin-header">
+      <div>
+        <div class="eyebrow">TITLE MANAGER</div>
+        <h1 id="heading">Add Title</h1>
+      </div>
+    </div>
+
+    <form class="admin-form" id="form">
+
+      <div class="form-grid">
+
+        <!-- BASIC INFORMATION -->
+
+        <div class="full">
+          <label>Title *</label>
+          <input name="title" id="title" required>
+        </div>
+
+        <div>
+          <label>Slug</label>
+          <input name="slug" id="slug" placeholder="auto-generated">
+        </div>
+
+        <div>
+          <label>Type</label>
+          <select name="type">
+            <option value="movie">Movie</option>
+            <option value="series">Web Series</option>
+          </select>
+        </div>
+
+        <!-- POSTER -->
+
+        <div class="full">
+          <label>Poster</label>
+
+          <div style="display:flex;gap:12px;align-items:center">
+
+            <div class="upload-preview" id="preview"></div>
+
+            <div style="flex:1">
+              <input
+                type="file"
+                id="posterFile"
+                accept="image/jpeg,image/png,image/webp"
+              >
+
+              <input
+                name="poster_url"
+                id="posterUrl"
+                placeholder="or paste image URL"
+              >
+            </div>
+
+          </div>
+
+          <div id="uploadMsg" class="form-msg"></div>
+        </div>
+
+        <!-- MOVIE DETAILS -->
+
+        <div>
+          <label>Year</label>
+          <input name="year" type="number">
+        </div>
+
+        <div>
+          <label>IMDb rating</label>
+          <input
+            name="imdb_rating"
+            type="number"
+            min="0"
+            max="10"
+            step="0.1"
+          >
+        </div>
+
+        <div>
+          <label>Language</label>
+          <input name="language">
+        </div>
+
+        <div>
+          <label>Country</label>
+          <input name="country">
+        </div>
+
+        <div class="full">
+          <label>Genre</label>
+          <input
+            name="genre"
+            placeholder="Action, Thriller, Sci-Fi"
+          >
+        </div>
+
+        <div>
+          <label>Quality</label>
+          <input
+            name="quality"
+            placeholder="HD / 4K"
+          >
+        </div>
+
+        <div>
+          <label>Duration</label>
+          <input
+            name="duration"
+            placeholder="2h 10m"
+          >
+        </div>
+
+        <div>
+          <label>Release date</label>
+          <input
+            name="release_date"
+            type="date"
+          >
+        </div>
+
+        <div>
+          <label>Director</label>
+          <input name="director">
+        </div>
+
+        <div class="full">
+          <label>Cast</label>
+          <input name="cast">
+        </div>
+
+        <div class="full">
+          <label>Trailer URL (YouTube)</label>
+          <input name="trailer_url">
+        </div>
+
+        <div class="full">
+          <label>Box office</label>
+          <input
+            name="box_office"
+            placeholder="$120M worldwide"
+          >
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- EDITORIAL CONTENT -->
+        <!-- ============================= -->
+
+        <div class="full">
+          <div class="eyebrow">EDITORIAL CONTENT</div>
+          <h2 style="margin:6px 0 4px">
+            Movie Review
+          </h2>
+
+          <p style="margin:0 0 14px;color:#999">
+            Keep the Quick Summary short. Use the Review section for the
+            full original FilmParadise editorial review.
+          </p>
+        </div>
+
+
+        <!-- QUICK SUMMARY -->
+
+        <div class="full">
+          <label>Quick Summary</label>
+
+          <textarea
+            name="quick_summary"
+            id="quickSummary"
+            rows="5"
+            placeholder="A short 80–150 word overview of the movie. Explain the basic premise, tone and what makes it interesting."
+          ></textarea>
+        </div>
+
+
+        <!-- FULL REVIEW -->
+
+        <div class="full">
+          <label>FilmParadise Review</label>
+
+          <textarea
+            name="review_body"
+            id="reviewBody"
+            rows="12"
+            placeholder="Write the full spoiler-free FilmParadise review. Discuss the story, direction, performances, atmosphere, action, visuals, pacing and overall experience."
+          ></textarea>
+        </div>
+
+
+        <!-- PROS -->
+
+        <div>
+          <label>What Works</label>
+
+          <textarea
+            name="review_pros"
+            id="reviewPros"
+            rows="7"
+            placeholder="What does the movie do particularly well?"
+          ></textarea>
+        </div>
+
+
+        <!-- CONS -->
+
+        <div>
+          <label>What Doesn't Work</label>
+
+          <textarea
+            name="review_cons"
+            id="reviewCons"
+            rows="7"
+            placeholder="Weaknesses, pacing issues, character problems, etc."
+          ></textarea>
+        </div>
+
+
+        <!-- WHO SHOULD WATCH -->
+
+        <div class="full">
+          <label>Who Should Watch?</label>
+
+          <textarea
+            name="who_should_watch"
+            id="whoShouldWatch"
+            rows="4"
+            placeholder="Who is this movie best suited for? Example: Fans of Korean horror, survival thrillers and fast-paced action."
+          ></textarea>
+        </div>
+
+
+        <!-- VERDICT -->
+
+        <div>
+          <label>Final Verdict</label>
+
+          <textarea
+            name="review_verdict"
+            id="reviewVerdict"
+            rows="5"
+            placeholder="Give the final spoiler-free verdict in a few sentences."
+          ></textarea>
+        </div>
+
+
+        <!-- FILMPARADISE RATING -->
+
+        <div>
+          <label>FilmParadise Rating</label>
+
+          <input
+            name="review_rating"
+            id="reviewRating"
+            type="number"
+            min="0"
+            max="10"
+            step="0.1"
+            placeholder="8.0"
+          >
+
+          <small style="display:block;margin-top:7px;color:#888">
+            Your editorial rating out of 10.
+          </small>
+        </div>
+
+
+        <!-- CATEGORIES -->
+
+        <div class="full">
+          <label>Categories</label>
+          <div id="cats" class="chip-select">
+            Loading…
+          </div>
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div>
+          <label>Status</label>
+
+          <select name="status">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
+
+
+        <!-- PLACEMENT -->
+
+        <div class="full">
+
+          <div class="eyebrow">SITE PLACEMENT</div>
+
+          <h2 style="margin:6px 0 12px">
+            Where should this title appear?
+          </h2>
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              name="show_home"
+            >
+            <span>
+              <strong>Show on Homepage</strong>
+              <small style="display:block;color:#888">
+                Display this title in the homepage movie section.
+              </small>
+            </span>
+          </label>
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              name="show_review"
+            >
+            <span>
+              <strong>Show in Reviews</strong>
+              <small style="display:block;color:#888">
+                Add this movie to the Latest Reviews section.
+              </small>
+            </span>
+          </label>
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              name="show_trailer"
+            >
+            <span>
+              <strong>Show in Trailers</strong>
+              <small style="display:block;color:#888">
+                Display this movie in the trailer section.
+              </small>
+            </span>
+          </label>
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              name="is_recommended"
+            >
+            <span>
+              <strong>Recommended</strong>
+              <small style="display:block;color:#888">
+                Show this title in Recommended For You.
+              </small>
+            </span>
+          </label>
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              name="is_featured"
+            >
+            <span>
+              <strong>Featured</strong>
+              <small style="display:block;color:#888">
+                Use this title as the featured homepage title.
+              </small>
+            </span>
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div
+        style="
+          margin-top:18px;
+          display:flex;
+          gap:10px;
+          flex-wrap:wrap
+        "
+      >
+
+        <button
+          class="btn btn-primary"
+          id="save"
+        >
+          Save title
+        </button>
+
+        <a
+          class="btn btn-ghost"
+          href="/admin/movies.html"
+        >
+          Cancel
+        </a>
+
+        <button
+          type="button"
+          class="btn btn-ghost"
+          id="deleteBtn"
+          style="display:none"
+        >
+          Delete
+        </button>
+
+        <span
+          id="msg"
+          class="form-msg"
+        ></span>
+
+      </div>
+
+    </form>
+
+  </main>
+
+</div>
+
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/admin/common.js"></script>
+<script src="/assets/js/admin/movie-form.js"></script>
+
+</body>
+</html>
