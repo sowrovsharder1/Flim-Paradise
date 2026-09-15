@@ -1,1 +1,332 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard — FilmParadise BD</title><link rel="stylesheet" href="/assets/css/style.css"></head><body class="admin-body"><div class="admin-shell"><aside class="admin-sidebar"><a class="brand admin-side-brand" href="/"><span>FILM</span>PARADISE <b>BD</b></a><nav class="admin-nav"><a class="active" href="/admin/index.html">Dashboard</a><a href="/admin/movies.html">Movies & Series</a><a href="/admin/movie-form.html">Add Title</a><a href="/admin/articles.html">Articles</a><a href="/admin/article-form.html">Add Article</a><a href="/admin/reviews.html">Reviews</a><a href="/admin/categories.html">Categories</a><a href="#" id="logoutBtn">Log out</a></nav></aside><main class="admin-main"><div class="admin-header"><div><div class="eyebrow">CONTROL ROOM</div><h1>Dashboard</h1></div><a class="btn btn-primary" href="/admin/movie-form.html">+ Add title</a></div><div class="stat-grid"><div class="stat-card"><span class="num" id="sTitles">—</span><span class="label">Total titles</span></div><div class="stat-card"><span class="num" id="sMovies">—</span><span class="label">Movies</span></div><div class="stat-card"><span class="num" id="sSeries">—</span><span class="label">Series</span></div><div class="stat-card"><span class="num" id="sPublished">—</span><span class="label">Published</span></div><div class="stat-card"><span class="num" id="sPending">—</span><span class="label">Pending reviews</span></div></div><section class="section"><div class="section-head"><h2>Quick actions</h2></div><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-ghost" href="/admin/movie-form.html">Add movie</a><a class="btn btn-ghost" href="/admin/article-form.html">Write article</a><a class="btn btn-ghost" href="/admin/reviews.html">Moderate reviews</a></div></section></main></div><script src="/assets/js/api.js"></script><script src="/assets/js/admin/common.js"></script><script>document.addEventListener('DOMContentLoaded',async()=>{if(!await admin.requireLogin())return;try{const d=await fp.apiFetch('/admin/stats');for(const [id,key] of [['sTitles','titles'],['sMovies','movies'],['sSeries','series'],['sPublished','published'],['sPending','pending_reviews']])document.getElementById(id).textContent=d.stats[key]??0}catch(e){document.getElementById('sTitles').textContent='!'}});</script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>
+    Dashboard — FilmParadise BD
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/style.css"
+  >
+
+</head>
+
+
+<body class="admin-body">
+
+
+<div class="admin-shell">
+
+
+  <!-- ADMIN SIDEBAR -->
+
+  <aside class="admin-sidebar">
+
+    <a
+      class="brand admin-side-brand"
+      href="/"
+    >
+      <span>FILM</span>PARADISE <b>BD</b>
+    </a>
+
+
+    <nav class="admin-nav">
+
+      <a
+        class="active"
+        href="/admin/index.html"
+      >
+        Dashboard
+      </a>
+
+
+      <a href="/admin/movies.html">
+        Movies & Series
+      </a>
+
+
+      <a href="/admin/movie-form.html">
+        Add Title
+      </a>
+
+
+      <a href="/admin/articles.html">
+        Articles
+      </a>
+
+
+      <a href="/admin/article-form.html">
+        Add Article
+      </a>
+
+
+      <!-- TOP 10 MANAGER -->
+
+      <a href="/admin/top-10.html">
+        Top 10 Manager
+      </a>
+
+
+      <a href="/admin/reviews.html">
+        Reviews
+      </a>
+
+
+      <a href="/admin/categories.html">
+        Categories
+      </a>
+
+
+      <a
+        href="#"
+        id="logoutBtn"
+      >
+        Log out
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- MAIN -->
+
+  <main class="admin-main">
+
+
+    <div class="admin-header">
+
+      <div>
+
+        <div class="eyebrow">
+          CONTROL ROOM
+        </div>
+
+        <h1>
+          Dashboard
+        </h1>
+
+      </div>
+
+
+      <a
+        class="btn btn-primary"
+        href="/admin/movie-form.html"
+      >
+        + Add title
+      </a>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stat-grid">
+
+
+      <div class="stat-card">
+
+        <span
+          class="num"
+          id="sTitles"
+        >
+          —
+        </span>
+
+        <span class="label">
+          Total titles
+        </span>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span
+          class="num"
+          id="sMovies"
+        >
+          —
+        </span>
+
+        <span class="label">
+          Movies
+        </span>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span
+          class="num"
+          id="sSeries"
+        >
+          —
+        </span>
+
+        <span class="label">
+          Series
+        </span>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span
+          class="num"
+          id="sPublished"
+        >
+          —
+        </span>
+
+        <span class="label">
+          Published
+        </span>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span
+          class="num"
+          id="sPending"
+        >
+          —
+        </span>
+
+        <span class="label">
+          Pending reviews
+        </span>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="section">
+
+      <div class="section-head">
+
+        <h2>
+          Quick actions
+        </h2>
+
+      </div>
+
+
+      <div
+        style="display:flex;gap:10px;flex-wrap:wrap"
+      >
+
+        <a
+          class="btn btn-ghost"
+          href="/admin/movie-form.html"
+        >
+          Add movie
+        </a>
+
+
+        <a
+          class="btn btn-ghost"
+          href="/admin/article-form.html"
+        >
+          Write article
+        </a>
+
+
+        <a
+          class="btn btn-ghost"
+          href="/admin/top-10.html"
+        >
+          Manage Top 10
+        </a>
+
+
+        <a
+          class="btn btn-ghost"
+          href="/admin/reviews.html"
+        >
+          Moderate reviews
+        </a>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+<script src="/assets/js/api.js"></script>
+
+<script src="/assets/js/admin/common.js"></script>
+
+
+<script>
+
+document.addEventListener(
+  'DOMContentLoaded',
+  async () => {
+
+    if (!await admin.requireLogin()) {
+      return;
+    }
+
+
+    try {
+
+      const d =
+        await fp.apiFetch('/admin/stats');
+
+
+      for (
+        const [id, key]
+        of [
+          ['sTitles', 'titles'],
+          ['sMovies', 'movies'],
+          ['sSeries', 'series'],
+          ['sPublished', 'published'],
+          ['sPending', 'pending_reviews']
+        ]
+      ) {
+
+        document.getElementById(id).textContent =
+          d.stats[key] ?? 0;
+
+      }
+
+    } catch (e) {
+
+      document.getElementById(
+        'sTitles'
+      ).textContent = '!';
+
+    }
+
+  }
+
+);
+
+</script>
+
+
+</body>
+</html>
