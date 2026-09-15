@@ -1,84 +1,108 @@
-import { getDB } from '../../_lib/db.js';
+import { getDB } from "../../_lib/db.js";
 import {
   json,
-  serverError,
+  badRequest,
   unauthorized,
-  badRequest
-} from '../../_lib/response.js';
-import { requireAuth } from '../../_lib/auth.js';
+  serverError
+} from "../../_lib/response.js";
+import { requireAuth } from "../../_lib/auth.js";
 
 
-function cleanSlug(value) {
-  return String(value || '')
+/*
+=====================================================
+SLUG GENERATOR
+=====================================================
+*/
+
+function makeSlug(title) {
+  return String(title || "")
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 180);
-}
-
-
-function safeText(value, max = 10000) {
-  return String(value ?? '').slice(0, max);
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
 }
 
 
 /*
-=========================================================
+=====================================================
+UNIQUE SLUG
+=====================================================
+*/
+
+async function makeUniqueSlug(db, title) {
+
+  const baseSlug =
+    makeSlug(title) ||
+    `top-10-${Date.now()}`;
+
+  let slug = baseSlug;
+  let counter = 2;
+
+  while (true) {
+
+    const existing =
+      await db
+        .prepare(
+          "SELECT id FROM top10_posts WHERE slug = ? LIMIT 1"
+        )
+        .bind(slug)
+        .first();
+
+    if (!existing) {
+      return slug;
+    }
+
+    slug =
+      `${baseSlug}-${counter}`;
+
+    counter++;
+
+  }
+
+}
+
+
+/*
+=====================================================
 GET
-=========================================================
+=====================================================
+
+Returns Top 10 posts.
+
+Admin manager can use this endpoint.
+Published posts are also available for future public
+Top 10 pages.
 */
 
 export async function onRequestGet({ request, env }) {
 
   try {
 
-    const db = getDB(env);
+    const db =
+      getDB(env);
+
 
     const url =
       new URL(request.url);
 
-    const id =
-      url.searchParams.get('id');
 
     const slug =
-      url.searchParams.get('slug');
+      url.searchParams.get("slug");
 
 
     /*
-    -----------------------------------------------------
+    -------------------------------------------------
     SINGLE POST
-    -----------------------------------------------------
+    -------------------------------------------------
     */
 
-    if (id || slug) {
+    if (slug) {
 
-      let post;
-
-
-      if (id) {
-
-        post = await db
-          .prepare(`
-            SELECT
-              id,
-              title,
-              slug,
-              description,
-              status,
-              created_at,
-              updated_at
-            FROM top10_posts
-            WHERE id = ?
-            LIMIT 1
-          `)
-          .bind(Number(id))
-          .first();
-
-      } else {
-
-        post = await db
-          .prepare(`
+      const post =
+        await db
+          .prepare(
+            `
             SELECT
               id,
               title,
@@ -90,11 +114,10 @@ export async function onRequestGet({ request, env }) {
             FROM top10_posts
             WHERE slug = ?
             LIMIT 1
-          `)
+            `
+          )
           .bind(slug)
           .first();
-
-      }
 
 
       if (!post) {
@@ -102,7 +125,7 @@ export async function onRequestGet({ request, env }) {
         return json(
           {
             ok: false,
-            error: 'Top 10 post not found.'
+            error: "Top 10 post not found."
           },
           404
         );
@@ -110,9 +133,10 @@ export async function onRequestGet({ request, env }) {
       }
 
 
-      const items =
+      const itemsResult =
         await db
-          .prepare(`
+          .prepare(
+            `
             SELECT
               id,
               post_id,
@@ -128,34 +152,36 @@ export async function onRequestGet({ request, env }) {
             FROM top10_post_items
             WHERE post_id = ?
             ORDER BY rank ASC
-          `)
+            `
+          )
           .bind(post.id)
           .all();
 
 
-      return json({
-
-        ok: true,
-
-        post,
-
-        items:
-          items.results || []
-
-      });
+      return json(
+        {
+          ok: true,
+          post: {
+            ...post,
+            items:
+              itemsResult.results || []
+          }
+        }
+      );
 
     }
 
 
     /*
-    -----------------------------------------------------
+    -------------------------------------------------
     ALL POSTS
-    -----------------------------------------------------
+    -------------------------------------------------
     */
 
-    const result =
+    const postsResult =
       await db
-        .prepare(`
+        .prepare(
+          `
           SELECT
             id,
             title,
@@ -166,24 +192,68 @@ export async function onRequestGet({ request, env }) {
             updated_at
           FROM top10_posts
           ORDER BY created_at DESC
-        `)
+          `
+        )
         .all();
 
 
-    return json({
+    const posts =
+      postsResult.results || [];
 
-      ok: true,
 
-      posts:
-        result.results || []
+    /*
+    -------------------------------------------------
+    GET #1 POSTER FOR EACH TOP 10 POST
+    -------------------------------------------------
+    */
 
-    });
+    for (const post of posts) {
+
+      const firstItem =
+        await db
+          .prepare(
+            `
+            SELECT
+              poster_key,
+              poster_url
+            FROM top10_post_items
+            WHERE post_id = ?
+              AND rank = 1
+            LIMIT 1
+            `
+          )
+          .bind(post.id)
+          .first();
+
+
+      post.main_poster_key =
+        firstItem?.poster_key || "";
+
+      post.main_poster_url =
+        firstItem?.poster_url || "";
+
+    }
+
+
+    return json(
+      {
+        ok: true,
+        posts
+      }
+    );
 
 
   } catch (error) {
 
+    console.error(
+      "Top 10 GET error:",
+      error
+    );
+
+
     return serverError(
-      error.message
+      error.message ||
+      "Failed to load Top 10 posts."
     );
 
   }
@@ -192,97 +262,72 @@ export async function onRequestGet({ request, env }) {
 
 
 /*
-=========================================================
-CREATE TOP 10 POST
-=========================================================
+=====================================================
+POST
+=====================================================
+
+Creates a new Top 10 post and its 10 ranked movies.
 */
 
-export async function onRequestPost({
-  request,
-  env
-}) {
-
-  /*
-  -------------------------------------------------------
-  ADMIN LOGIN CHECK
-  -------------------------------------------------------
-  */
-
-  if (
-    !await requireAuth(
-      request,
-      env
-    )
-  ) {
-
-    return unauthorized();
-
-  }
-
+export async function onRequestPost({ request, env }) {
 
   try {
+
+    /*
+    -------------------------------------------------
+    ADMIN AUTHENTICATION
+    -------------------------------------------------
+    */
+
+    if (
+      !await requireAuth(
+        request,
+        env
+      )
+    ) {
+
+      return unauthorized();
+
+    }
+
+
+    /*
+    -------------------------------------------------
+    DATABASE
+    -------------------------------------------------
+    */
 
     const db =
       getDB(env);
 
 
+    /*
+    -------------------------------------------------
+    REQUEST BODY
+    -------------------------------------------------
+    */
+
     const body =
       await request.json();
 
 
-    /*
-    -------------------------------------------------------
-    BASIC POST INFORMATION
-    -------------------------------------------------------
-    */
-
     const title =
-      safeText(
-        body.title,
-        200
+      String(
+        body.title || ""
       ).trim();
 
 
     const description =
-      safeText(
-        body.description,
-        5000
+      String(
+        body.description || ""
       ).trim();
 
 
     const status =
-      body.status === 'published'
-        ? 'published'
-        : 'draft';
+      body.status === "draft"
+        ? "draft"
+        : "published";
 
-
-    if (!title) {
-
-      return badRequest(
-        'Top 10 segment title is required.'
-      );
-
-    }
-
-
-    const slug =
-      cleanSlug(title);
-
-
-    if (!slug) {
-
-      return badRequest(
-        'A valid Top 10 title is required.'
-      );
-
-    }
-
-
-    /*
-    -------------------------------------------------------
-    MOVIE ITEMS
-    -------------------------------------------------------
-    */
 
     const items =
       Array.isArray(body.items)
@@ -290,22 +335,52 @@ export async function onRequestPost({
         : [];
 
 
-    if (items.length !== 10) {
+    /*
+    -------------------------------------------------
+    VALIDATE TITLE
+    -------------------------------------------------
+    */
+
+    if (!title) {
 
       return badRequest(
-        'Exactly 10 Top 10 movies are required.'
+        "Top 10 Segment Title is required."
       );
 
     }
 
 
     /*
-    -------------------------------------------------------
-    VALIDATE ALL 10 MOVIES
-    -------------------------------------------------------
+    -------------------------------------------------
+    VALIDATE ITEMS
+    -------------------------------------------------
     */
 
-    const cleanedItems = [];
+    if (items.length !== 10) {
+
+      return badRequest(
+        "Exactly 10 movies are required."
+      );
+
+    }
+
+
+    /*
+    -------------------------------------------------
+    VALIDATE EACH RANK
+    -------------------------------------------------
+    */
+
+    const ranks =
+      items
+        .map(
+          item =>
+            Number(item.rank)
+        )
+        .sort(
+          (a, b) =>
+            a - b
+        );
 
 
     for (
@@ -314,165 +389,101 @@ export async function onRequestPost({
       i++
     ) {
 
-      const item =
-        items[i] || {};
-
-
-      const rank =
-        Number(item.rank);
-
-
-      const movieTitle =
-        safeText(
-          item.title,
-          200
-        ).trim();
-
-
-      const language =
-        safeText(
-          item.language,
-          120
-        ).trim();
-
-
-      const shortDescription =
-        safeText(
-          item.short_description,
-          3000
-        ).trim();
-
-
-      const posterKey =
-        safeText(
-          item.poster_key,
-          1000
-        ).trim();
-
-
-      const posterUrl =
-        safeText(
-          item.poster_url,
-          2000
-        ).trim();
-
-
-      const releaseYear =
-        item.release_year === '' ||
-        item.release_year === null ||
-        item.release_year === undefined
-          ? null
-          : Number(item.release_year);
-
-
       if (
-        rank !== i + 1
+        ranks[i] !== i + 1
       ) {
 
         return badRequest(
-          `Invalid rank for movie #${i + 1}.`
+          "Top 10 rankings must contain #1 through #10."
         );
 
       }
-
-
-      if (!movieTitle) {
-
-        return badRequest(
-          `Movie title is required for #${rank}.`
-        );
-
-      }
-
-
-      if (!language) {
-
-        return badRequest(
-          `Language is required for #${rank}.`
-        );
-
-      }
-
-
-      if (!posterKey || !posterUrl) {
-
-        return badRequest(
-          `Poster is required for #${rank}.`
-        );
-
-      }
-
-
-      cleanedItems.push({
-
-        rank,
-
-        title:
-          movieTitle,
-
-        release_year:
-          releaseYear,
-
-        language,
-
-        short_description:
-          shortDescription,
-
-        poster_key:
-          posterKey,
-
-        poster_url:
-          posterUrl
-
-      });
 
     }
 
 
     /*
-    -------------------------------------------------------
-    CHECK DUPLICATE SLUG
-    -------------------------------------------------------
+    -------------------------------------------------
+    VALIDATE MOVIE DATA
+    -------------------------------------------------
     */
 
-    const existing =
-      await db
-        .prepare(`
-          SELECT id
-          FROM top10_posts
-          WHERE slug = ?
-          LIMIT 1
-        `)
-        .bind(slug)
-        .first();
+    for (const item of items) {
+
+      if (
+        !String(
+          item.title || ""
+        ).trim()
+      ) {
+
+        return badRequest(
+          `Movie title is required for #${item.rank}.`
+        );
+
+      }
 
 
-    if (existing) {
+      if (
+        !String(
+          item.language || ""
+        ).trim()
+      ) {
 
-      return badRequest(
-        'A Top 10 post with this title already exists.'
-      );
+        return badRequest(
+          `Language is required for #${item.rank}.`
+        );
+
+      }
+
+
+      if (
+        !String(
+          item.poster_key || ""
+        ).trim()
+      ) {
+
+        return badRequest(
+          `Poster is required for #${item.rank}.`
+        );
+
+      }
 
     }
 
 
     /*
-    -------------------------------------------------------
-    CREATE POST
-    -------------------------------------------------------
+    -------------------------------------------------
+    CREATE UNIQUE SLUG
+    -------------------------------------------------
+    */
+
+    const slug =
+      await makeUniqueSlug(
+        db,
+        title
+      );
+
+
+    /*
+    -------------------------------------------------
+    CREATE TOP 10 POST
+    -------------------------------------------------
     */
 
     const postResult =
       await db
-        .prepare(`
-          INSERT INTO top10_posts (
+        .prepare(
+          `
+          INSERT INTO top10_posts
+          (
             title,
             slug,
             description,
             status
           )
           VALUES (?, ?, ?, ?)
-        `)
+          `
+        )
         .bind(
           title,
           slug,
@@ -482,90 +493,165 @@ export async function onRequestPost({
         .run();
 
 
-    const postId =
-      postResult.meta.last_row_id;
-
-
-    /*
-    -------------------------------------------------------
-    CREATE 10 MOVIES
-    -------------------------------------------------------
-    */
-
-    for (
-      const item of cleanedItems
+    if (
+      !postResult.success
     ) {
 
-      await db
-        .prepare(`
-          INSERT INTO top10_post_items (
-            post_id,
-            rank,
-            title,
-            release_year,
-            language,
-            short_description,
-            poster_key,
-            poster_url
-          )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `)
-        .bind(
-
-          postId,
-
-          item.rank,
-
-          item.title,
-
-          item.release_year,
-
-          item.language,
-
-          item.short_description,
-
-          item.poster_key,
-
-          item.poster_url
-
-        )
-        .run();
+      throw new Error(
+        "Failed to create Top 10 post."
+      );
 
     }
 
 
     /*
-    -------------------------------------------------------
-    SUCCESS
-    -------------------------------------------------------
+    -------------------------------------------------
+    GET NEW POST ID
+    -------------------------------------------------
     */
 
-    return json({
+    const post =
+      await db
+        .prepare(
+          `
+          SELECT
+            id,
+            title,
+            slug,
+            description,
+            status,
+            created_at,
+            updated_at
+          FROM top10_posts
+          WHERE slug = ?
+          LIMIT 1
+          `
+        )
+        .bind(slug)
+        .first();
 
-      ok: true,
 
-      message:
-        'Top 10 post saved successfully.',
+    if (!post) {
 
-      id:
-        postId,
+      throw new Error(
+        "Top 10 post was created but could not be loaded."
+      );
 
-      slug
+    }
 
-    }, 201);
+
+    /*
+    -------------------------------------------------
+    INSERT 10 MOVIES
+    -------------------------------------------------
+    */
+
+    try {
+
+      for (const item of items) {
+
+        const year =
+          item.release_year === null ||
+          item.release_year === "" ||
+          typeof item.release_year === "undefined"
+            ? null
+            : Number(item.release_year);
+
+
+        await db
+          .prepare(
+            `
+            INSERT INTO top10_post_items
+            (
+              post_id,
+              rank,
+              title,
+              release_year,
+              language,
+              short_description,
+              poster_key,
+              poster_url
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `
+          )
+          .bind(
+            post.id,
+            Number(item.rank),
+            String(item.title || "").trim(),
+            year,
+            String(item.language || "").trim(),
+            String(item.short_description || "").trim(),
+            String(item.poster_key || "").trim(),
+            String(item.poster_url || "").trim()
+          )
+          .run();
+
+      }
+
+    } catch (itemError) {
+
+      /*
+      -----------------------------------------------
+      CLEAN UP POST IF ITEM INSERT FAILS
+      -----------------------------------------------
+      */
+
+      try {
+
+        await db
+          .prepare(
+            "DELETE FROM top10_posts WHERE id = ?"
+          )
+          .bind(post.id)
+          .run();
+
+      } catch (cleanupError) {
+
+        console.error(
+          "Top 10 cleanup error:",
+          cleanupError
+        );
+
+      }
+
+
+      throw itemError;
+
+    }
+
+
+    /*
+    -------------------------------------------------
+    SUCCESS
+    -------------------------------------------------
+    */
+
+    return json(
+      {
+        ok: true,
+        message:
+          "Top 10 post created successfully.",
+        post: {
+          ...post,
+          items
+        }
+      },
+      201
+    );
 
 
   } catch (error) {
 
     console.error(
-      'Top 10 create error:',
+      "Top 10 POST error:",
       error
     );
 
 
     return serverError(
       error.message ||
-      'Failed to save Top 10 post.'
+      "Failed to save Top 10 post."
     );
 
   }
