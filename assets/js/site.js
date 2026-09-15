@@ -93,6 +93,58 @@
 
 
   /* =====================================================
+     TOP 10 CARD
+     ===================================================== */
+
+  function top10Card(post){
+
+    const poster =
+      post.main_poster_url ||
+      (
+        post.main_poster_key
+          ? `/api/top10/image?key=${encodeURIComponent(post.main_poster_key)}`
+          : placeholder
+      );
+
+    return `
+      <a
+        class="movie-card"
+        href="/top-10.html?slug=${encodeURIComponent(post.slug || '')}"
+      >
+
+        <div class="poster-wrap">
+
+          <img
+            loading="lazy"
+            src="${esc(poster)}"
+            alt="${esc(post.title || 'Top 10')} poster"
+            onerror="this.src='${placeholder}'"
+          >
+
+          <span class="rank">
+            TOP 10
+          </span>
+
+        </div>
+
+        <div class="card-info">
+
+          <div class="card-title">
+            ${esc(post.title || '')}
+          </div>
+
+          <div class="card-summary">
+            ${esc(post.description || '')}
+          </div>
+
+        </div>
+
+      </a>
+    `;
+  }
+
+
+  /* =====================================================
      ARTICLE CARD
      ===================================================== */
 
@@ -308,7 +360,8 @@
         news,
         trailers,
         series,
-        box
+        box,
+        top10
 
       ] = await Promise.all([
 
@@ -352,6 +405,12 @@
 
         apiFetch(
           '/articles?type=box-office&limit=8'
+        ),
+
+        /* TOP 10 */
+
+        apiFetch(
+          '/top10/posts'
         )
 
       ]);
@@ -466,6 +525,44 @@
             : `
               <div class="empty">
                 No recommendations yet.
+              </div>
+            `;
+
+      }
+
+
+      /* =================================================
+         TOP 10
+         ================================================= */
+
+      const top10List =
+        document.getElementById('top10-list');
+
+      if(top10List){
+
+        const posts =
+          Array.isArray(top10?.posts)
+            ? top10.posts
+            : [];
+
+        const publishedPosts =
+          posts.filter(
+            post =>
+              String(post.status || '')
+                .toLowerCase() === 'published'
+          );
+
+        top10List.innerHTML =
+          publishedPosts.length
+
+            ? publishedPosts
+                .slice(0,8)
+                .map(top10Card)
+                .join('')
+
+            : `
+              <div class="empty">
+                No Top 10 lists yet.
               </div>
             `;
 
