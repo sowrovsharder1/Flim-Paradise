@@ -4,88 +4,202 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form) return;
 
+  function setStatus(message, type = "") {
+    status.textContent = message;
+    status.className = "form-status";
+
+    if (type) {
+      status.classList.add(type);
+    }
+  }
+
+  async function uploadPoster(file, rank) {
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("rank", String(rank));
+
+    const response = await fetch("/api/top10/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(
+        data.error || `Poster upload failed for rank ${rank}.`
+      );
+    }
+
+    return data;
+  }
+
+  async function saveEntry(entry) {
+    const response = await fetch("/api/top10", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(entry)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(
+        data.error || `Failed to save rank ${entry.rank}.`
+      );
+    }
+
+    return data;
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    status.textContent = "Saving...";
-    status.className = "form-status";
+    const submitButton = form.querySelector(
+      'button[type="submit"]'
+    );
 
-    const entries = [];
-
-    for (let rank = 1; rank <= 10; rank++) {
-      const titleInput = document.getElementById(`top10-title-${rank}`);
-      const yearInput = document.getElementById(`top10-year-${rank}`);
-      const languageInput = document.getElementById(`top10-language-${rank}`);
-      const descriptionInput = document.getElementById(
-        `top10-description-${rank}`
-      );
-
-      const title = titleInput?.value.trim() || "";
-      const releaseYear = yearInput?.value.trim() || "";
-      const language = languageInput?.value.trim() || "";
-      const shortDescription =
-        descriptionInput?.value.trim() || "";
-
-      if (!title && !language && !shortDescription && !releaseYear) {
-        continue;
-      }
-
-      if (!title) {
-        status.textContent = `Rank ${rank}: Movie title is required.`;
-        status.className = "form-status error";
-        return;
-      }
-
-      if (!language) {
-        status.textContent = `Rank ${rank}: Language is required.`;
-        status.className = "form-status error";
-        return;
-      }
-
-      entries.push({
-        rank,
-        title,
-        release_year: releaseYear,
-        language,
-        short_description: shortDescription,
-        poster_key: "",
-        poster_url: ""
-      });
-    }
-
-    if (entries.length === 0) {
-      status.textContent = "Please add at least one Top 10 movie.";
-      status.className = "form-status error";
-      return;
+    if (submitButton) {
+      submitButton.disabled = true;
     }
 
     try {
-      for (const entry of entries) {
-        const response = await fetch("/api/top10", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(entry)
-        });
+      const entries = [];
 
-        const data = await response.json();
+      for (let rank = 1; rank <= 10; rank++) {
+        const titleInput =
+          document.getElementById(`top10-title-${rank}`);
 
-        if (!response.ok || !data.ok) {
-          throw new Error(
-            data.error || `Failed to save rank ${entry.rank}.`
+        const yearInput =
+          document.getElementById(`top10-year-${rank}`);
+
+        const languageInput =
+          document.getElementById(`top10-language-${rank}`);
+
+        const descriptionInput =
+          document.getElementById(
+            `top10-description-${rank}`
           );
+
+        const posterInput =
+          document.getElementById(`top10-poster-${rank}`);
+
+        const title =
+          titleInput?.value.trim() || "";
+
+        const releaseYear =
+          yearInput?.value.trim() || "";
+
+        const language =
+          languageInput?.value.trim() || "";
+
+        const shortDescription =
+          descriptionInput?.value.trim() || "";
+
+        const posterFile =
+          posterInput?.files?.[0] || null;
+
+        const emptyEntry =
+          !title &&
+          !releaseYear &&
+          !language &&
+          !shortDescription &&
+          !posterFile;
+
+        if (emptyEntry) {
+          continue;
         }
+
+        if (!title) {
+          setStatus(
+            `Rank ${rank}: Movie title is required.`,
+            "error"
+          );
+          return;
+        }
+
+        if (!language) {
+          setStatus(
+            `Rank ${rank}: Language is required.`,
+            "error"
+          );
+          return;
+        }
+
+        entries.push({
+          rank,
+          title,
+          release_year: releaseYear,
+          language,
+          short_description: shortDescription,
+          posterFile
+        });
       }
 
-      status.textContent = "Top 10 saved successfully.";
-      status.className = "form-status success";
+      if (entries.length === 0) {
+        setStatus(
+          "Please add at least one Top 10 movie.",
+          "error"
+        );
+        return;
+      }
+
+      setStatus("Saving Top 10...");
+
+      for (const entry of entries) {
+        let posterKey = "";
+        let posterUrl = "";
+
+        if (entry.posterFile) {
+          setStatus(
+            `Uploading poster for Rank ${entry.rank}...`
+          );
+
+          const uploadResult = await uploadPoster(
+            entry.posterFile,
+            entry.rank
+          );
+
+          posterKey = uploadResult.key || "";
+          posterUrl = uploadResult.url || "";
+        }
+
+        setStatus(
+          `Saving Rank ${entry.rank}...`
+        );
+
+        await saveEntry({
+          rank: entry.rank,
+          title: entry.title,
+          release_year: entry.release_year,
+          language: entry.language,
+          short_description: entry.short_description,
+          poster_key: posterKey,
+          poster_url: posterUrl
+        });
+      }
+
+      setStatus(
+        "Top 10 saved successfully.",
+        "success"
+      );
+
     } catch (error) {
       console.error(error);
 
-      status.textContent =
-        error.message || "Something went wrong while saving.";
-      status.className = "form-status error";
+      setStatus(
+        error.message ||
+          "Something went wrong while saving.",
+        "error"
+      );
+
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
     }
   });
 });
