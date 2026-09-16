@@ -445,6 +445,21 @@
     }
 
     /*
+      SEARCH
+      (Newly added to handle search queries like ?q=colony)
+    */
+
+    const q = params.get("q");
+
+    if (q) {
+      await loadMovies(
+        "/movies?q=" + encodeURIComponent(q) + "&limit=100",
+        `Search: ${q}`
+      );
+      return;
+    }
+
+    /*
       DEFAULT
     */
 
