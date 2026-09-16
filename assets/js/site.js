@@ -1,4 +1,3 @@
-```javascript
 (function(){
 
   const {apiFetch,esc,formatDate}=window.fp;
@@ -814,4 +813,3 @@
   );
 
 })();
-```
